@@ -1,0 +1,40 @@
+﻿## Build and output directories
+bin/
+obj/
+out/
+[Bb]in/
+[Oo]bj/
+
+## Visual Studio & IDE files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+.vscode/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+project.lock.json
+project.assets.json
+
+## Logs and databases
+*.log
+*.sqlite
+*.db
+*.mdf
+*.ldf
+
+## OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+## Test Results
+TestResults/
+*.trx
+*.coverage

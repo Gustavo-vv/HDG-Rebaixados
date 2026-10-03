@@ -1,0 +1,67 @@
+﻿@model HDG.Application.DTOs.RegistroDto
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="glass-panel p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <a asp-controller="Home" asp-action="Index" class="hdg-logo-link mb-3 d-inline-block">
+                        <img src="~/img/logo.png" alt="HDG Rebaixados" style="height: 72px; width: auto;" />
+                    </a>
+                    <h2 class="text-white fw-bold font-heading">Crie sua Conta</h2>
+                    <p class="text-secondary small">Cadastre-se para favoritar peças e avaliar seus produtos.</p>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty] != null)
+                {
+                    <div class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white small" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                <form asp-action="Registro" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Nome Completo *</label>
+                        <input asp-for="NomeCompleto" class="form-control form-control-custom" placeholder="Ex: Felipe Augusto" required autofocus />
+                        <span asp-validation-for="NomeCompleto" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">E-mail *</label>
+                        <input asp-for="Email" type="email" class="form-control form-control-custom" placeholder="seu@email.com" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Senha (mínimo 8 caracteres, maiúscula e símbolo) *</label>
+                        <input asp-for="Senha" type="password" class="form-control form-control-custom" placeholder="••••••••" required />
+                        <span asp-validation-for="Senha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">Confirmar Senha *</label>
+                        <input asp-for="ConfirmarSenha" type="password" class="form-control form-control-custom" placeholder="••••••••" required />
+                        <span asp-validation-for="ConfirmarSenha" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-racing w-100 justify-content-center mb-3">
+                        <i class="bi bi-check2-circle me-1"></i> Finalizar Cadastro
+                    </button>
+
+                    <div class="text-center text-secondary small">
+                        Já possui uma conta? <a asp-action="Login" class="fw-bold text-decoration-none" style="color: var(--accent-green);">Fazer login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

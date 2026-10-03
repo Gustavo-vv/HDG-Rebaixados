@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HDG.API/HDG.API.csproj" />
+  <Project Path="HDG.Application/HDG.Application.csproj" />
+  <Project Path="HDG.Domain/HDG.Domain.csproj" />
+  <Project Path="HDG.Infrastructure/HDG.Infrastructure.csproj" />
+  <Project Path="HDG.UI/HDG.UI.csproj" />
+</Solution>

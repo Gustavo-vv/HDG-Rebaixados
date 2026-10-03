@@ -1,0 +1,89 @@
+﻿@model HDG.Application.DTOs.LoginDto
+@{
+    ViewData["Title"] = "Entrar";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="glass-panel p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <a asp-controller="Home" asp-action="Index" class="hdg-logo-link mb-3 d-inline-block">
+                        <img src="~/img/logo.png" alt="HDG Rebaixados" style="height: 72px; width: auto;" />
+                    </a>
+                    <h2 class="text-white fw-bold font-heading">Acesse sua Conta</h2>
+                    <p class="text-secondary small">Entre com suas credenciais para gerenciar seus pedidos e avaliações.</p>
+                </div>
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty] != null)
+                {
+                    <div class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white small" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                <!-- Demo Credentials Box -->
+                <div class="p-3 rounded-3 mb-4 border border-secondary border-opacity-25" style="background: rgba(0, 230, 118, 0.05); border-color: rgba(0, 230, 118, 0.3) !important;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="small" style="color: var(--accent-green);"><i class="bi bi-shield-check"></i> Acesso Demo Admin:</strong>
+                        <button type="button" class="btn btn-sm btn-racing py-0 px-2 fw-bold" onclick="preencherAdmin()" style="font-size: 0.75rem; height: 26px;">
+                            Auto-preencher
+                        </button>
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.8rem;">
+                        <div>E-mail: <code class="text-white">admin@hdgrebaixados.com.br</code></div>
+                        <div>Senha: <code class="text-white">Admin@HDG2026!</code></div>
+                    </div>
+                </div>
+
+                <form asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">E-mail</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input asp-for="Email" id="inputEmail" class="form-control form-control-custom" placeholder="seu@email.com" required autofocus />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">Senha</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">
+                                <i class="bi bi-key"></i>
+                            </span>
+                            <input asp-for="Senha" id="inputSenha" type="password" class="form-control form-control-custom" placeholder="••••••••" required />
+                        </div>
+                        <span asp-validation-for="Senha" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-racing w-100 justify-content-center mb-3">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Entrar na Plataforma
+                    </button>
+
+                    <div class="text-center text-secondary small">
+                        Ainda não tem conta? <a asp-action="Registro" class="fw-bold text-decoration-none" style="color: var(--accent-green);">Cadastre-se grátis</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function preencherAdmin() {
+            document.getElementById('inputEmail').value = 'admin@hdgrebaixados.com.br';
+            document.getElementById('inputSenha').value = 'Admin@HDG2026!';
+        }
+    </script>
+}

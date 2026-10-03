@@ -1,0 +1,106 @@
+﻿@model IEnumerable<HDG.Application.DTOs.AvaliacaoDto>
+@{
+    ViewData["Title"] = "Moderação de Avaliações";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-6 fw-bold text-white mb-1 font-heading">Moderação de Avaliações</h1>
+        <p class="text-secondary small mb-0">Aprove comentários reais de clientes ou exclua spam antes de exibir no catálogo.</p>
+    </div>
+</div>
+
+<div class="glass-panel p-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-secondary">
+            <i class="bi bi-chat-square-heart display-4 mb-3 d-block text-secondary opacity-50"></i>
+            <h4 class="text-white">Nenhuma avaliação encontrada</h4>
+            <p>Quando os clientes enviarem avaliações pelas páginas das peças, elas aparecerão aqui para moderação.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Peça</th>
+                        <th>Nota</th>
+                        <th>Comentário</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var av in Model)
+                    {
+                        <tr>
+                            <td class="small text-secondary">@av.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-white fw-bold">@av.NomeCliente</td>
+                            <td>
+                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@av.PecaId" target="_blank" class="text-decoration-none text-light">
+                                    @av.PecaNome <i class="bi bi-box-arrow-up-right small text-secondary"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="rating-stars small">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= av.Nota)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-secondary"></i>
+                                        }
+                                    }
+                                    <span class="text-white ms-1">(@av.Nota)</span>
+                                </div>
+                            </td>
+                            <td class="small text-secondary" style="max-width: 300px;">
+                                "@av.Comentario"
+                            </td>
+                            <td>
+                                @if (av.Aprovada)
+                                {
+                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50">
+                                        <i class="bi bi-check-circle"></i> Aprovada
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50">
+                                        <i class="bi bi-clock-history"></i> Pendente
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    @if (!av.Aprovada)
+                                    {
+                                        <form asp-action="AprovarAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-racing" title="Aprovar Comentário">
+                                                <i class="bi bi-check-lg"></i> Aprovar
+                                            </button>
+                                        </form>
+                                    }
+                                    <form asp-action="ExcluirAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline" onsubmit="return confirm('Excluir esta avaliação permanentemente?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

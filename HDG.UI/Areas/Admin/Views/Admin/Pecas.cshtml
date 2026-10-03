@@ -1,0 +1,113 @@
+﻿@model IEnumerable<HDG.Application.DTOs.PecaDto>
+@{
+    ViewData["Title"] = "Gestão de Peças";
+
+    string ObterNomeAmigavelCategoria(HDG.Domain.Enums.CategoriaPeca cat) => cat switch
+    {
+        HDG.Domain.Enums.CategoriaPeca.Suspensao => "Suspensão",
+        HDG.Domain.Enums.CategoriaPeca.Rodas => "Rodas",
+        HDG.Domain.Enums.CategoriaPeca.Freios => "Freios",
+        HDG.Domain.Enums.CategoriaPeca.Motor => "Motor & Performance",
+        HDG.Domain.Enums.CategoriaPeca.Escapamento => "Escapamento",
+        HDG.Domain.Enums.CategoriaPeca.Interior => "Interior",
+        HDG.Domain.Enums.CategoriaPeca.Acessorios => "Acessórios",
+        _ => cat.ToString()
+    };
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+    <div>
+        <h1 class="display-6 fw-bold text-white mb-1 font-heading">Gestão de Peças & Catálogo</h1>
+        <p class="text-secondary small mb-0">Controle completo de preços, estoque, ativação e fotos das peças.</p>
+    </div>
+    <a asp-action="PecaNova" class="btn btn-racing">
+        <i class="bi bi-plus-lg me-1"></i> Cadastrar Nova Peça
+    </a>
+</div>
+
+<div class="glass-panel p-4">
+    <div class="table-responsive">
+        <table class="table-dark-custom">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Foto</th>
+                    <th>Nome do Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço (R$)</th>
+                    <th>Avaliações</th>
+                    <th>Status</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var peca in Model)
+                {
+                    <tr>
+                        <td class="font-monospace text-secondary">#@peca.Id.ToString("D4")</td>
+                        <td>
+                            <img src="@(peca.ImagemPrincipalUrl ?? Url.Content("~/img/placeholder-peca.png"))" 
+                                 alt="@peca.Nome" 
+                                 class="rounded border border-secondary border-opacity-50" 
+                                 style="width: 50px; height: 50px; object-fit: cover;" 
+                                 onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                        </td>
+                        <td>
+                            <div class="text-white fw-bold">@peca.Nome</div>
+                            <small class="text-secondary d-block text-truncate" style="max-width: 250px;">@peca.Descricao</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-dark border border-secondary text-secondary">@ObterNomeAmigavelCategoria(peca.Categoria)</span>
+                        </td>
+                        <td class="text-white font-heading fw-bold fs-6">
+                            R$ @peca.Preco.ToString("N2")
+                        </td>
+                        <td>
+                            <div class="rating-stars small">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span class="text-white fw-bold">@peca.MediaAvaliacoes.ToString("N1")</span>
+                                <span class="text-secondary">(@peca.TotalAvaliacoes)</span>
+                            </div>
+                        </td>
+                        <td>
+                            @if (peca.Ativo)
+                            {
+                                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">
+                                    <i class="bi bi-check-circle"></i> Ativa
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary bg-opacity-25 text-secondary border border-secondary border-opacity-50 px-2 py-1">
+                                    <i class="bi bi-x-circle"></i> Inativa
+                                </span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@peca.Id" target="_blank" class="btn btn-sm btn-outline-dark-custom" title="Visualizar">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="PecaEditar" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form asp-action="PecaAlternarStatus" asp-route-id="@peca.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom @(peca.Ativo ? "text-warning" : "text-success")" title="@(peca.Ativo ? "Desativar" : "Ativar")">
+                                        <i class="bi @(peca.Ativo ? "bi-pause-circle" : "bi-play-circle")"></i>
+                                    </button>
+                                </form>
+                                <form asp-action="PecaExcluir" asp-route-id="@peca.Id" method="post" class="d-inline" onsubmit="return confirm('Deseja realmente excluir esta peça permanentemente?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,207 @@
+﻿@model IEnumerable<HDG.Application.DTOs.PecaDto>
+@{
+    ViewData["Title"] = "Catálogo de Peças Preparadas & Suspensões";
+    var busca = ViewBag.Busca as string;
+    var categoriaAtual = ViewBag.CategoriaSelecionada as HDG.Domain.Enums.CategoriaPeca?;
+    var whatsAppNumero = ViewBag.WhatsAppNumero as string ?? "5511999999999";
+
+    string ObterNomeAmigavelCategoria(HDG.Domain.Enums.CategoriaPeca cat) => cat switch
+    {
+        HDG.Domain.Enums.CategoriaPeca.Suspensao => "Suspensão",
+        HDG.Domain.Enums.CategoriaPeca.Rodas => "Rodas",
+        HDG.Domain.Enums.CategoriaPeca.Freios => "Freios",
+        HDG.Domain.Enums.CategoriaPeca.Motor => "Motor & Performance",
+        HDG.Domain.Enums.CategoriaPeca.Escapamento => "Escapamento",
+        HDG.Domain.Enums.CategoriaPeca.Interior => "Interior",
+        HDG.Domain.Enums.CategoriaPeca.Acessorios => "Acessórios",
+        _ => cat.ToString()
+    };
+}
+
+<!-- Hero Section -->
+<section class="hero-wrapper">
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-badge">
+                    <i class="bi bi-fire"></i> Loja Oficial HDG Rebaixados 2026
+                </div>
+                <h1 class="hero-title">
+                    O Seu Carro no Chão com Performance & Estilo.
+                </h1>
+                <p class="hero-subtitle">
+                    Kits completos de suspensão a ar, de rosca e fixa, além de rodas tala larga exclusivas e freios esportivos com envio expresso para todo o Brasil.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#catalogo" class="btn btn-racing btn-lg">
+                        <i class="bi bi-grid-fill me-1"></i> Explorar Catálogo
+                    </a>
+                    <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Quero montar um projeto especial para meu carro com a HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp btn-lg">
+                        <i class="bi bi-whatsapp me-1"></i> Falar com Especialista
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="hero-stat-item">
+                        <h4>+1.500</h4>
+                        <p>Projetos Entregues</p>
+                    </div>
+                    <div class="hero-stat-item">
+                        <h4>100%</h4>
+                        <p>Garantia e NF</p>
+                    </div>
+                    <div class="hero-stat-item">
+                        <h4>5.0 ★</h4>
+                        <p>Avaliação Média</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center position-relative">
+                <img src="~/img/placeholder-peca.png" 
+                     alt="HDG Rebaixados" 
+                     class="img-fluid rounded-4 shadow-lg border border-secondary border-opacity-25" 
+                     style="max-height: 380px; width: 100%; object-fit: cover;" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Catalog Section -->
+<section id="catalogo" class="py-5">
+    <div class="container">
+        <!-- Search and Filters Bar -->
+        <div class="glass-panel p-4 mb-5">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-6">
+                    <form method="get" asp-action="Index" class="d-flex gap-2">
+                        @if (categoriaAtual.HasValue)
+                        {
+                            <input type="hidden" name="categoria" value="@((int)categoriaAtual.Value)" />
+                        }
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="busca" value="@busca" class="form-control form-control-custom" placeholder="Buscar por suspensão, aro de roda, pinça, downpipe..." />
+                        </div>
+                        <button type="submit" class="btn btn-racing">Buscar</button>
+                        @if (!string.IsNullOrEmpty(busca) || categoriaAtual.HasValue)
+                        {
+                            <a asp-action="Index" class="btn btn-outline-dark-custom" title="Limpar Filtros">
+                                <i class="bi bi-x-lg"></i>
+                            </a>
+                        }
+                    </form>
+                </div>
+
+                <div class="col-lg-6 text-lg-end text-secondary small">
+                    <span class="badge bg-dark border border-secondary text-white px-3 py-2">
+                        <i class="bi bi-box-seam me-1 text-success"></i> @Model.Count() produto(s) encontrado(s)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Category Pills com Scroll oculto e nomes acentuados -->
+            <div class="filter-pills-container mt-3">
+                <a asp-action="Index" asp-route-busca="@busca" class="filter-pill @(!categoriaAtual.HasValue ? "active" : "")">
+                    <i class="bi bi-lightning-charge-fill"></i> Todos os Produtos
+                </a>
+                <a asp-action="Index" asp-route-categoria="1" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Suspensao ? "active" : "")">
+                    <i class="bi bi-sliders"></i> Suspensão
+                </a>
+                <a asp-action="Index" asp-route-categoria="2" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Rodas ? "active" : "")">
+                    <i class="bi bi-vinyl"></i> Rodas
+                </a>
+                <a asp-action="Index" asp-route-categoria="3" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Freios ? "active" : "")">
+                    <i class="bi bi-stop-circle"></i> Freios
+                </a>
+                <a asp-action="Index" asp-route-categoria="4" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Motor ? "active" : "")">
+                    <i class="bi bi-cpu"></i> Motor & Performance
+                </a>
+                <a asp-action="Index" asp-route-categoria="5" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Escapamento ? "active" : "")">
+                    <i class="bi bi-wind"></i> Escapamento
+                </a>
+                <a asp-action="Index" asp-route-categoria="6" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Interior ? "active" : "")">
+                    <i class="bi bi-speedometer"></i> Interior
+                </a>
+                <a asp-action="Index" asp-route-categoria="7" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Acessorios ? "active" : "")">
+                    <i class="bi bi-gear-wide-connected"></i> Acessórios
+                </a>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        @if (!Model.Any())
+        {
+            <div class="glass-panel text-center py-5">
+                <i class="bi bi-emoji-frown display-3 text-secondary mb-3 d-block"></i>
+                <h4 class="text-white">Nenhuma peça encontrada</h4>
+                <p class="text-secondary">Tente alterar os termos da busca ou selecione outra categoria.</p>
+                <a asp-action="Index" class="btn btn-outline-dark-custom mt-2">Ver Todas as Peças</a>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var peca in Model)
+                {
+                    var msgZap = $"Olá! Gostaria de mais detalhes sobre a peça: {peca.Nome} (Valor: R$ {peca.Preco:N2}) na HDG Rebaixados.";
+                    var urlZap = $"https://wa.me/{whatsAppNumero}?text={Uri.EscapeDataString(msgZap)}";
+                    var imgUrl = !string.IsNullOrEmpty(peca.ImagemPrincipalUrl) 
+                        ? peca.ImagemPrincipalUrl 
+                        : Url.Content("~/img/placeholder-peca.png");
+
+                    <div class="col-xl-4 col-md-6">
+                        <div class="peca-card">
+                            <div class="peca-card-img-wrap">
+                                <img src="@imgUrl" 
+                                     alt="@peca.Nome" 
+                                     class="peca-card-img" 
+                                     loading="lazy" 
+                                     onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                                <span class="peca-badge-cat">@ObterNomeAmigavelCategoria(peca.Categoria)</span>
+                                <span class="peca-badge-status bg-success bg-opacity-75 text-white">Disponível</span>
+                            </div>
+
+                            <div class="peca-card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="rating-stars">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= Math.Round(peca.MediaAvaliacoes))
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-star text-secondary"></i>
+                                            }
+                                        }
+                                    </div>
+                                    <small class="text-secondary">(@peca.TotalAvaliacoes avaliações)</small>
+                                </div>
+
+                                <h3 class="peca-card-title" title="@peca.Nome">@peca.Nome</h3>
+                                <p class="peca-card-desc">@peca.Descricao</p>
+
+                                <div class="peca-card-footer">
+                                    <div class="peca-price">
+                                        <small>R$</small> @peca.Preco.ToString("N2")
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Detalhes" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom" title="Ver Detalhes">
+                                            <i class="bi bi-eye"></i> Detalhes
+                                        </a>
+                                        <a href="@urlZap" target="_blank" class="btn btn-sm btn-whatsapp" title="Negociar no WhatsApp">
+                                            <i class="bi bi-whatsapp"></i> Zap
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

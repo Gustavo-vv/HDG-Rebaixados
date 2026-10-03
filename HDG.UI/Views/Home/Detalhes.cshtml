@@ -1,0 +1,226 @@
+﻿@model HDG.Application.DTOs.PecaDto
+@{
+    ViewData["Title"] = Model.Nome;
+    var avaliacoes = ViewBag.Avaliacoes as IEnumerable<HDG.Application.DTOs.AvaliacaoDto> ?? Enumerable.Empty<HDG.Application.DTOs.AvaliacaoDto>();
+    var whatsAppNumero = ViewBag.WhatsAppNumero as string ?? "5511999999999";
+    var msgZap = $"Olá! Tenho interesse na peça '{Model.Nome}' que vi no site da HDG Rebaixados (Valor: R$ {Model.Preco:N2}). Gostaria de mais detalhes.";
+    var urlZap = $"https://wa.me/{whatsAppNumero}?text={Uri.EscapeDataString(msgZap)}";
+
+    string ObterNomeAmigavelCategoria(HDG.Domain.Enums.CategoriaPeca cat) => cat switch
+    {
+        HDG.Domain.Enums.CategoriaPeca.Suspensao => "Suspensão",
+        HDG.Domain.Enums.CategoriaPeca.Rodas => "Rodas",
+        HDG.Domain.Enums.CategoriaPeca.Freios => "Freios",
+        HDG.Domain.Enums.CategoriaPeca.Motor => "Motor & Performance",
+        HDG.Domain.Enums.CategoriaPeca.Escapamento => "Escapamento",
+        HDG.Domain.Enums.CategoriaPeca.Interior => "Interior",
+        HDG.Domain.Enums.CategoriaPeca.Acessorios => "Acessórios",
+        _ => cat.ToString()
+    };
+}
+
+<div class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-secondary text-decoration-none">Início</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index" asp-route-categoria="@((int)Model.Categoria)" class="text-secondary text-decoration-none">@ObterNomeAmigavelCategoria(Model.Categoria)</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">@Model.Nome</li>
+        </ol>
+    </nav>
+
+    <!-- Product Header & Media -->
+    <div class="row g-5">
+        <!-- Gallery -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-3">
+                <div class="rounded-3 overflow-hidden bg-black text-center mb-3" style="height: 420px;">
+                    <img id="mainImage" 
+                         src="@(Model.Imagens.FirstOrDefault()?.Url ?? Url.Content("~/img/placeholder-peca.png"))" 
+                         alt="@Model.Nome" 
+                         class="img-fluid h-100 w-100" 
+                         style="object-fit: cover;" 
+                         onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                </div>
+
+                @if (Model.Imagens.Count > 1)
+                {
+                    <div class="d-flex gap-2 overflow-x-auto pb-2">
+                        @foreach (var img in Model.Imagens)
+                        {
+                            <div class="rounded border border-secondary border-opacity-50 overflow-hidden" 
+                                 style="width: 80px; height: 80px; flex-shrink: 0; cursor: pointer;"
+                                 onclick="document.getElementById('mainImage').src = '@img.Url'">
+                                <img src="@img.Url" alt="Miniatura" class="w-100 h-100" style="object-fit: cover;" onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Details & CTA -->
+        <div class="col-lg-6">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge" style="background: var(--accent-green); color: #000; font-weight: 800;">@ObterNomeAmigavelCategoria(Model.Categoria)</span>
+                <span class="badge bg-dark border border-secondary text-secondary">Código #@Model.Id.ToString("D4")</span>
+            </div>
+
+            <h1 class="display-6 fw-bold text-white mb-3 font-heading">@Model.Nome</h1>
+
+            <!-- Rating Overview -->
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <div class="rating-stars fs-5">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Round(Model.MediaAvaliacoes))
+                        {
+                            <i class="bi bi-star-fill"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star text-secondary"></i>
+                        }
+                    }
+                </div>
+                <span class="text-white fw-bold">@Model.MediaAvaliacoes.ToString("N1")</span>
+                <span class="text-secondary">(@Model.TotalAvaliacoes avaliações de clientes)</span>
+            </div>
+
+            <!-- Price Box -->
+            <div class="glass-panel p-4 mb-4">
+                <div class="d-flex align-items-baseline gap-2">
+                    <span class="text-secondary fs-5">Por apenas</span>
+                    <span class="display-5 fw-bold text-white font-heading">
+                        <small class="fs-4" style="color: var(--accent-green);">R$</small> @Model.Preco.ToString("N2")
+                    </span>
+                </div>
+                <p class="text-success small mb-0 mt-1">
+                    <i class="bi bi-lightning-fill"></i> Em até 12x de R$ @((Model.Preco / 12).ToString("N2")) no cartão ou com 5% de desconto no PIX
+                </p>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <h5 class="text-white fw-bold mb-2">Descrição do Produto</h5>
+                <p class="text-secondary" style="white-space: pre-line; line-height: 1.8;">@Model.Descricao</p>
+            </div>
+
+            <!-- CTA Actions -->
+            <div class="d-flex flex-column flex-sm-row gap-3 pt-3 border-top border-secondary border-opacity-25">
+                <a href="@urlZap" target="_blank" class="btn btn-whatsapp btn-lg flex-grow-1 justify-content-center">
+                    <i class="bi bi-whatsapp fs-5"></i> Comprar pelo WhatsApp
+                </a>
+                <a asp-action="Index" class="btn btn-outline-dark-custom btn-lg">
+                    <i class="bi bi-arrow-left"></i> Catálogo
+                </a>
+            </div>
+
+            <!-- Security Badges -->
+            <div class="row g-2 mt-4 pt-3 border-top border-secondary border-opacity-25 text-secondary small">
+                <div class="col-6 d-flex align-items-center gap-2">
+                    <i class="bi bi-shield-check text-success fs-5"></i> Garantia de 1 Ano
+                </div>
+                <div class="col-6 d-flex align-items-center gap-2">
+                    <i class="bi bi-box-seam text-warning fs-5"></i> Pronta Entrega
+                </div>
+                <div class="col-6 d-flex align-items-center gap-2">
+                    <i class="bi bi-credit-card text-info fs-5"></i> Parcelamento em até 12x
+                </div>
+                <div class="col-6 d-flex align-items-center gap-2">
+                    <i class="bi bi-headset text-success fs-5"></i> Suporte Especializado
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row mt-5 pt-4">
+        <div class="col-lg-7">
+            <h3 class="text-white fw-bold mb-4 font-heading">
+                <i class="bi bi-chat-heart text-success me-2"></i> Avaliações dos Clientes (@avaliacoes.Count())
+            </h3>
+
+            @if (!avaliacoes.Any())
+            {
+                <div class="glass-panel p-4 text-center text-secondary">
+                    <p class="mb-0">Esta peça ainda não possui avaliações aprovadas. Seja o primeiro a avaliar!</p>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var av in avaliacoes)
+                    {
+                        <div class="glass-panel p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <strong class="text-white"><i class="bi bi-person-fill text-secondary"></i> @av.NomeCliente</strong>
+                                    <span class="badge bg-success bg-opacity-25 text-success small ms-2"><i class="bi bi-patch-check-fill"></i> Compra Verificada</span>
+                                </div>
+                                <div class="rating-stars small">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= av.Nota)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-secondary"></i>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(av.Comentario))
+                            {
+                                <p class="text-secondary mb-1 small">"@av.Comentario"</p>
+                            }
+                            <span class="text-muted small">@av.DataCriacao.ToString("dd/MM/yyyy")</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Add Review Form -->
+        <div class="col-lg-5 mt-4 mt-lg-0">
+            <div class="glass-panel p-4">
+                <h4 class="text-white fw-bold mb-3 font-heading">
+                    <i class="bi bi-star text-warning me-2"></i> Avalie este Produto
+                </h4>
+                <p class="text-secondary small mb-3">Conte sua experiência com esta peça na HDG Rebaixados. Seu comentário ajudará outros amantes de carros baixos.</p>
+
+                <form asp-action="EnviarAvaliacao" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="PecaId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Sua Nota *</label>
+                        <select name="Nota" class="form-select form-select-custom" required>
+                            <option value="5" selected>⭐⭐⭐⭐⭐ - 5 Estrelas (Excelente)</option>
+                            <option value="4">⭐⭐⭐⭐ - 4 Estrelas (Muito Bom)</option>
+                            <option value="3">⭐⭐⭐ - 3 Estrelas (Bom)</option>
+                            <option value="2">⭐⭐ - 2 Estrelas (Regular)</option>
+                            <option value="1">⭐ - 1 Estrela (Insatisfeito)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Seu Nome *</label>
+                        <input type="text" name="NomeCliente" class="form-control form-control-custom" placeholder="Ex: Felipe Ramos" required maxlength="100" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Seu Comentário</label>
+                        <textarea name="Comentario" rows="3" class="form-control form-control-custom" placeholder="Fale sobre o acabamento, altura, durabilidade ou instalação..." maxlength="1000"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-racing w-100 justify-content-center">
+                        <i class="bi bi-send-fill me-1"></i> Enviar Avaliação para Moderação
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

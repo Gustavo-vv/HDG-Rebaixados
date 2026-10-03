@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Acesso Negado";
+}
+
+<div class="container py-5 text-center">
+    <div class="glass-panel p-5 max-w-600 mx-auto">
+        <i class="bi bi-shield-x display-1 text-danger mb-3 d-block"></i>
+        <h2 class="text-white fw-bold font-heading">Acesso Restrito</h2>
+        <p class="text-secondary mb-4">Vocêê não tem permissão para acessar esta área administrativa. É necessário possuir a credencial de Administrador.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark-custom">
+                <i class="bi bi-house-door"></i> Voltar ao Início
+            </a>
+            <a asp-action="Login" class="btn btn-racing">
+                <i class="bi bi-box-arrow-in-right"></i> Trocar de Conta
+            </a>
+        </div>
+    </div>
+</div>
