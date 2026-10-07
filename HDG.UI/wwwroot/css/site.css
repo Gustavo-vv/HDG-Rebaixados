@@ -1149,10 +1149,40 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 .table-dark-custom tr td:last-child {
-    border-right: 1px solid var(--border-subtle);
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+/* ==========================================================================
+   TRANSIÇÃO SUAVE & ESTADOS DO CATÁLOGO SPA (AJAX)
+   ========================================================================== */
+#catalogo {
+    scroll-margin-top: 90px;
 }
+
+#catalogo-conteudo {
+    transition: opacity 180ms ease, transform 180ms ease;
+    will-change: opacity, transform;
+}
+
+#catalogo-conteudo.catalogo-carregando {
+    opacity: 0.35;
+    pointer-events: none;
+    transform: scale(0.995);
+}
+
+.category-card.active {
+    border-color: var(--accent-green) !important;
+    background: var(--bg-card-hover) !important;
+    box-shadow: 0 8px 25px rgba(0, 230, 118, 0.25);
+}
+.category-card.active::before {
+    height: 100% !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #catalogo-conteudo {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
 
 /* ==========================================================================
    ANIMAÇÕES & ACESSIBILIDADE (PREFERS-REDUCED-MOTION)
