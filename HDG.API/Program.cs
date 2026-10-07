@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using HDG.Application.Extensions;
 using HDG.Infrastructure.Data;
 using HDG.Infrastructure.Extensions;
@@ -42,7 +42,8 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Emissor"] ?? "HDGRebaixadosAPI",
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audiencia"] ?? "HDGRebaixadosApp",
-        ClockSkew = TimeSpan.Zero
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(30)
     };
 });
 

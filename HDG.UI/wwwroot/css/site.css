@@ -179,15 +179,150 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     vertical-align: middle;
 }
 
-/* Announcement Top Bar */
+/* ==========================================================================
+   ANNOUNCEMENT TOP STRIP - VISUAL DISCRETO & PREMIUM
+   ========================================================================== */
 .announcement-strip {
-    background: linear-gradient(90deg, var(--accent-green-dark) 0%, var(--accent-green) 50%, var(--accent-green-dark) 100%);
-    color: #000;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 12px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid rgba(154, 224, 0, 0.38);
+    height: 36px;
+    min-height: 36px;
+    position: relative;
+    z-index: 1025;
+    transition: height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin 0.3s ease;
+    overflow: hidden;
+}
+
+.announcement-strip.fechada {
+    height: 0 !important;
+    min-height: 0 !important;
+    border-bottom: none !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+}
+
+.announcement-spacer {
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.announcement-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.announcement-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.announcement-icon {
+    color: var(--accent-green);
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.announcement-text {
+    color: var(--metal-silver);
+}
+
+.announcement-highlight {
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+.announcement-divider {
+    color: var(--border-medium);
+    font-size: 0.75rem;
+    opacity: 0.6;
+    user-select: none;
+}
+
+.announcement-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    padding: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.announcement-close-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.announcement-close-btn:focus-visible {
+    outline: 1px solid var(--accent-green);
+    outline-offset: 1px;
+}
+
+/* Mobile & Tablet (< 992px): Alternância suave com 1 mensagem por vez */
+@media (max-width: 991.98px) {
+    .announcement-strip {
+        height: 32px;
+        min-height: 32px;
+    }
+
+    .announcement-content {
+        gap: 0;
+        position: relative;
+    }
+
+    .announcement-item {
+        position: absolute;
+        width: 100%;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        font-size: 0.72rem;
+    }
+
+    .announcement-item.announcement-item-active {
+        position: relative;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .announcement-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .announcement-strip,
+    .announcement-item {
+        transition: none !important;
+        transform: none !important;
+    }
 }
 
 /* ==========================================================================
@@ -836,16 +971,20 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
+/* ==========================================================================
+   FILTER PILLS (CATEGORIAS DO CATÁLOGO) - DESKTOP WRAP & MOBILE SCROLL
+   ========================================================================== */
+.filter-pills-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .filter-pills-container {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-.filter-pills-container::-webkit-scrollbar {
-    display: none;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    outline: none;
 }
 
 .filter-pill {
@@ -865,11 +1004,17 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     gap: 8px;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    user-select: none;
 }
 
 .filter-pill:hover {
     color: var(--text-primary);
     border-color: var(--border-medium);
+}
+
+.filter-pill:focus-visible {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
 }
 
 .filter-pill.active {
@@ -878,6 +1023,133 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     font-weight: 800;
     border-color: var(--accent-green);
     box-shadow: 0 4px 15px var(--accent-green-glow);
+}
+
+/* Setas de navegação (ocultas por padrão em desktop) */
+.filter-pills-arrow {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(14, 18, 20, 0.92);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    transition: all 0.2s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.filter-pills-arrow:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+    transform: translateY(-50%) scale(1.08);
+}
+
+.filter-pills-arrow.arrow-prev {
+    left: 4px;
+}
+
+.filter-pills-arrow.arrow-next {
+    right: 4px;
+}
+
+.filter-pills-arrow.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Desktop (>= 992px): sem rolagem, tudo visível com flex-wrap */
+@media (min-width: 992px) {
+    .filter-pills-container {
+        flex-wrap: wrap;
+        overflow-x: visible;
+    }
+
+    .filter-pills-arrow {
+        display: none !important;
+    }
+}
+
+/* Tablet e Mobile (< 992px): rolagem lateral bem sinalizada com fade e setas */
+@media (max-width: 991.98px) {
+    .filter-pills-wrapper {
+        overflow: hidden;
+    }
+
+    .filter-pills-wrapper::before,
+    .filter-pills-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 38px;
+        z-index: 5;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+
+    /* Degradê de fade à esquerda */
+    .filter-pills-wrapper::before {
+        left: 0;
+        background: linear-gradient(to right, rgba(14, 18, 20, 0.96) 0%, transparent 100%);
+    }
+
+    /* Degradê de fade à direita */
+    .filter-pills-wrapper::after {
+        right: 0;
+        background: linear-gradient(to left, rgba(14, 18, 20, 0.96) 0%, transparent 100%);
+    }
+
+    .filter-pills-wrapper.tem-mais-esquerda::before {
+        opacity: 1;
+    }
+
+    .filter-pills-wrapper.tem-mais-direita::after {
+        opacity: 1;
+    }
+
+    .filter-pills-arrow {
+        display: flex;
+    }
+
+    .filter-pills-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        cursor: grab;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .filter-pills-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-pills-container.is-dragging {
+        cursor: grabbing !important;
+        scroll-snap-type: none !important;
+        scroll-behavior: auto !important;
+        user-select: none;
+    }
+
+    .filter-pill {
+        scroll-snap-align: start;
+    }
 }
 
 /* Cards de Peça Redesenhados (Corte nos cantos e Glow) */

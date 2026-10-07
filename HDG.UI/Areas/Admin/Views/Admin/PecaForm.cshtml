@@ -13,9 +13,9 @@
     </a>
 </div>
 
-<div class="row">
+<div class="row admin-has-fixed-actions">
     <div class="col-lg-8">
-        <div class="glass-panel p-4 p-md-5">
+        <div class="glass-panel p-3 p-md-5">
             @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty] != null)
             {
                 <div class="alert alert-danger bg-danger bg-opacity-25 border border-danger text-white small mb-4" role="alert">
@@ -31,13 +31,13 @@
                 @Html.AntiForgeryToken()
 
                 <div class="row g-3 mb-3">
-                    <div class="col-md-8">
+                    <div class="col-12 col-md-8">
                         <label class="form-label-custom">Nome do Produto *</label>
                         <input asp-for="Nome" class="form-control form-control-custom" placeholder="Ex: Kit Suspensão a Ar Tebão I-System 8mm" required autofocus />
                         <span asp-validation-for="Nome" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
                         <label class="form-label-custom">Categoria *</label>
                         <select asp-for="Categoria" class="form-select form-select-custom" required>
                             <option value="1">Suspensão</option>
@@ -53,14 +53,14 @@
                 </div>
 
                 <div class="row g-3 mb-3">
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label-custom">Preço de Venda (R$) *</label>
                         <input asp-for="Preco" type="number" step="0.01" class="form-control form-control-custom" placeholder="Ex: 4890.00" required />
                         <span asp-validation-for="Preco" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-md-6 d-flex align-items-center">
-                        <div class="form-check form-switch mt-4">
+                    <div class="col-12 col-md-6 d-flex align-items-center">
+                        <div class="form-check form-switch mt-2 mt-md-4">
                             <input asp-for="Ativo" class="form-check-input" type="checkbox" id="switchAtivo" checked />
                             <label class="form-check-label text-white fw-bold ms-2" for="switchAtivo">
                                 Produto Ativo no Catálogo
@@ -77,20 +77,20 @@
                 </div>
 
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label-custom">Upload de Foto (Cloudinary)</label>
                         <input type="file" name="imagemArquivo" class="form-control form-control-custom" accept="image/*" />
                         <small class="text-muted">Formatos: JPG, PNG, WEBP até 10MB</small>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6">
                         <label class="form-label-custom">Ou URL Direta de Imagem</label>
                         <input type="url" name="imagemUrlManual" class="form-control form-control-custom" placeholder="https://exemplo.com/foto.jpg" />
                         <small class="text-muted">Cole uma URL externa caso não queira fazer upload</small>
                     </div>
                 </div>
 
-                <div class="d-flex gap-3">
+                <div class="admin-form-actions-bar">
                     <button type="submit" class="btn btn-racing btn-lg">
                         <i class="bi bi-check2-circle me-1"></i> Publicar Peça no Catálogo
                     </button>

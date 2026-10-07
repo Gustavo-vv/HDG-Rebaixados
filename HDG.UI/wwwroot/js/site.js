@@ -1,5 +1,67 @@
 // HDG REBAIXADOS - Interações de Interface & Animações
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. Faixa de Anúncio Superior (Mobile Slider & Botão Fechar)
+    const announcementStrip = document.getElementById('hdg-announcement-strip');
+    if (announcementStrip) {
+        // Verificar se já foi fechada nesta sessão
+        if (sessionStorage.getItem('hdg_announcement_closed') === 'true') {
+            announcementStrip.classList.add('fechada');
+            announcementStrip.style.display = 'none';
+        } else {
+            // Botão Fechar
+            const btnFechar = document.getElementById('btn-fechar-announcement');
+            if (btnFechar) {
+                btnFechar.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    announcementStrip.classList.add('fechada');
+                    sessionStorage.setItem('hdg_announcement_closed', 'true');
+                    setTimeout(() => {
+                        announcementStrip.style.display = 'none';
+                    }, 300);
+                });
+            }
+
+            // Alternância de mensagens no Mobile (< 992px)
+            const items = announcementStrip.querySelectorAll('.announcement-item');
+            if (items.length > 1) {
+                let currentIndex = 0;
+                let intervaloRotacao = null;
+                let isPaused = false;
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                function proximaMensagem() {
+                    if (window.innerWidth >= 992 || isPaused || prefersReducedMotion) return;
+
+                    items[currentIndex].classList.remove('announcement-item-active');
+                    currentIndex = (currentIndex + 1) % items.length;
+                    items[currentIndex].classList.add('announcement-item-active');
+                }
+
+                function iniciarRotacao() {
+                    if (intervaloRotacao) clearInterval(intervaloRotacao);
+                    if (!prefersReducedMotion) {
+                        intervaloRotacao = setInterval(proximaMensagem, 4000);
+                    }
+                }
+
+                // Pausar no hover ou no foco
+                announcementStrip.addEventListener('mouseenter', () => { isPaused = true; });
+                announcementStrip.addEventListener('mouseleave', () => { isPaused = false; });
+                announcementStrip.addEventListener('focusin', () => { isPaused = true; });
+                announcementStrip.addEventListener('focusout', () => { isPaused = false; });
+
+                iniciarRotacao();
+
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth >= 992) {
+                        items.forEach(it => it.classList.remove('announcement-item-active'));
+                        items[0].classList.add('announcement-item-active');
+                    }
+                }, { passive: true });
+            }
+        }
+    }
+
     // 1. Navbar Sticky Glass Effect ao Rolar a Página
     const navbar = document.querySelector('.glass-nav');
     if (navbar) {

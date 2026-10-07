@@ -35,6 +35,7 @@ public class AuthController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("AuthRateLimitPolicy")]
     public async Task<IActionResult> Login(LoginDto model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
@@ -45,11 +46,20 @@ public class AuthController : Controller
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null || !user.Ativo)
         {
-            ModelState.AddModelError(string.Empty, "E-mail ou senha inválidos, ou conta desativada.");
+            // Mensagem genérica para evitar enumeração de contas e proteção contra contas inativas
+            ModelState.AddModelError(string.Empty, "E-mail ou senha inválidos.");
             return View(model);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user.UserName ?? model.Email, model.Senha, isPersistent: true, lockoutOnFailure: false);
+        // lockoutOnFailure: true garante a trava de segurança por tentativas excessivas (brute-force)
+        var result = await _signInManager.PasswordSignInAsync(user.UserName ?? model.Email, model.Senha, isPersistent: true, lockoutOnFailure: true);
+        
+        if (result.IsLockedOut)
+        {
+            ModelState.AddModelError(string.Empty, "Conta temporariamente bloqueada por excesso de tentativas. Tente novamente mais tarde.");
+            return View(model);
+        }
+
         if (result.Succeeded)
         {
             var roles = await _userManager.GetRolesAsync(user);
@@ -82,6 +92,7 @@ public class AuthController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("AuthRateLimitPolicy")]
     public async Task<IActionResult> Registro(RegistroDto model)
     {
         if (!ModelState.IsValid)
@@ -136,6 +147,7 @@ public class AuthController : Controller
     [HttpGet]
     public IActionResult AcessoNegado()
     {
+        Response.StatusCode = StatusCodes.Status403Forbidden;
         return View();
     }
 }

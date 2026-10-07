@@ -29,9 +29,19 @@ public class AuthService : IAuthService
         if (user == null || !user.Ativo)
             return null;
 
+        // Se a conta já estiver bloqueada por excesso de tentativas
+        if (await _userManager.IsLockedOutAsync(user))
+            return null;
+
         var senhaValida = await _userManager.CheckPasswordAsync(user, dto.Senha);
         if (!senhaValida)
+        {
+            await _userManager.AccessFailedAsync(user);
             return null;
+        }
+
+        // Reseta as tentativas falhas após o sucesso
+        await _userManager.ResetAccessFailedCountAsync(user);
 
         var roles = await _userManager.GetRolesAsync(user);
         var token = GerarJwtToken(user, roles, out var expiracao);

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HDG.Application.DTOs.PecaDto>
+@model IEnumerable<HDG.Application.DTOs.PecaDto>
 @{
     ViewData["Title"] = "Gestão de Peças";
 
@@ -25,9 +25,9 @@
     </a>
 </div>
 
-<div class="glass-panel p-4">
+<div class="glass-panel p-3 p-md-4">
     <div class="table-responsive">
-        <table class="table-dark-custom">
+        <table class="table-dark-custom table-admin-responsive">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -44,32 +44,31 @@
                 @foreach (var peca in Model)
                 {
                     <tr>
-                        <td class="font-monospace text-secondary">#@peca.Id.ToString("D4")</td>
-                        <td>
+                        <td data-label="ID" class="font-monospace text-secondary">#@peca.Id.ToString("D4")</td>
+                        <td data-label="Foto">
                             <img src="@(peca.ImagemPrincipalUrl ?? Url.Content("~/img/placeholder-peca.png"))" 
                                  alt="@peca.Nome" 
-                                 class="rounded border border-secondary border-opacity-50" 
-                                 style="width: 50px; height: 50px; object-fit: cover;" 
+                                 class="admin-thumb-img" 
                                  onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
                         </td>
-                        <td>
+                        <td data-label="Nome do Produto">
                             <div class="text-white fw-bold">@peca.Nome</div>
                             <small class="text-secondary d-block text-truncate" style="max-width: 250px;">@peca.Descricao</small>
                         </td>
-                        <td>
+                        <td data-label="Categoria">
                             <span class="badge bg-dark border border-secondary text-secondary">@ObterNomeAmigavelCategoria(peca.Categoria)</span>
                         </td>
-                        <td class="text-white font-heading fw-bold fs-6">
+                        <td data-label="Preço" class="text-white font-heading fw-bold fs-6">
                             R$ @peca.Preco.ToString("N2")
                         </td>
-                        <td>
+                        <td data-label="Avaliações">
                             <div class="rating-stars small">
                                 <i class="bi bi-star-fill text-warning"></i>
                                 <span class="text-white fw-bold">@peca.MediaAvaliacoes.ToString("N1")</span>
                                 <span class="text-secondary">(@peca.TotalAvaliacoes)</span>
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Status">
                             @if (peca.Ativo)
                             {
                                 <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-2 py-1">
@@ -83,23 +82,23 @@
                                 </span>
                             }
                         </td>
-                        <td class="text-end">
+                        <td data-label="Ações" class="text-end">
                             <div class="d-flex justify-content-end gap-2">
-                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@peca.Id" target="_blank" class="btn btn-sm btn-outline-dark-custom" title="Visualizar">
+                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@peca.Id" target="_blank" class="btn btn-sm btn-outline-dark-custom" title="Visualizar" aria-label="Visualizar @peca.Nome">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a asp-action="PecaEditar" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom" title="Editar">
+                                <a asp-action="PecaEditar" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom" title="Editar" aria-label="Editar @peca.Nome">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <form asp-action="PecaAlternarStatus" asp-route-id="@peca.Id" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom @(peca.Ativo ? "text-warning" : "text-success")" title="@(peca.Ativo ? "Desativar" : "Ativar")">
+                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom @(peca.Ativo ? "text-warning" : "text-success")" title="@(peca.Ativo ? "Desativar" : "Ativar")" aria-label="@(peca.Ativo ? "Desativar" : "Ativar") @peca.Nome">
                                         <i class="bi @(peca.Ativo ? "bi-pause-circle" : "bi-play-circle")"></i>
                                     </button>
                                 </form>
                                 <form asp-action="PecaExcluir" asp-route-id="@peca.Id" method="post" class="d-inline" onsubmit="return confirm('Deseja realmente excluir esta peça permanentemente?');">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir">
+                                    <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir" aria-label="Excluir @peca.Nome">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -111,3 +110,8 @@
         </table>
     </div>
 </div>
+
+<!-- Botão Flutuante (FAB) para Mobile -->
+<a asp-action="PecaNova" class="admin-fab-btn" title="Cadastrar Nova Peça" aria-label="Cadastrar Nova Peça">
+    <i class="bi bi-plus-lg"></i>
+</a>

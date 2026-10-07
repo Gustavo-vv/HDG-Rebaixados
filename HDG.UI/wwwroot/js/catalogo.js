@@ -55,6 +55,194 @@
     }
 
     /**
+     * Gerenciador Avançado de Rolagem Horizontal das Pills de Categoria (Mobile/Tablet)
+     * - Seta anterior e próxima com scroll suave de 200px
+     * - Degradê de sombra (fade) nas bordas esquerda e direita
+     * - Drag-to-scroll com mouse (com supressão de clique acidental)
+     * - Conversão de roda do mouse (wheel vertical para horizontal)
+     * - Centralização automática da pill ativa no carregamento e troca
+     */
+    function inicializarScrollPills() {
+        const wrapper = document.querySelector('.filter-pills-wrapper');
+        const container = document.getElementById('filter-pills-container');
+        if (!wrapper || !container) return;
+
+        const btnPrev = wrapper.querySelector('.filter-pills-arrow.arrow-prev');
+        const btnNext = wrapper.querySelector('.filter-pills-arrow.arrow-next');
+
+        const prefereSemAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const scrollBehavior = prefereSemAnimacao ? 'auto' : 'smooth';
+
+        // 1. Atualizar visibilidade dos fades e setas baseado na posição do scroll
+        function atualizarEstadoScroll() {
+            if (window.innerWidth >= 992) {
+                wrapper.classList.remove('tem-mais-esquerda', 'tem-mais-direita');
+                if (btnPrev) btnPrev.classList.remove('visible');
+                if (btnNext) btnNext.classList.remove('visible');
+                return;
+            }
+
+            const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+            const currentScroll = container.scrollLeft;
+
+            const temEsquerda = currentScroll > 8;
+            const temDireita = currentScroll < (maxScroll - 8);
+
+            if (temEsquerda) {
+                wrapper.classList.add('tem-mais-esquerda');
+                if (btnPrev) btnPrev.classList.add('visible');
+            } else {
+                wrapper.classList.remove('tem-mais-esquerda');
+                if (btnPrev) btnPrev.classList.remove('visible');
+            }
+
+            if (temDireita) {
+                wrapper.classList.add('tem-mais-direita');
+                if (btnNext) btnNext.classList.add('visible');
+            } else {
+                wrapper.classList.remove('tem-mais-direita');
+                if (btnNext) btnNext.classList.remove('visible');
+            }
+        }
+
+        // 2. Centralizar a pill ativa na área visível
+        function centralizarPillAtiva() {
+            if (window.innerWidth >= 992) return;
+            const pillAtiva = container.querySelector('.filter-pill.active');
+            if (pillAtiva) {
+                pillAtiva.scrollIntoView({
+                    inline: 'center',
+                    block: 'nearest',
+                    behavior: scrollBehavior
+                });
+            }
+        }
+
+        // Flag para garantir inicialização única dos listeners
+        if (container.dataset.scrollInited === 'true') {
+            atualizarEstadoScroll();
+            centralizarPillAtiva();
+            return;
+        }
+        container.dataset.scrollInited = 'true';
+
+        // Ouvinte de scroll com passive listener
+        let ticking = false;
+        container.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    atualizarEstadoScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Ouvinte de redimensionamento da janela
+        window.addEventListener('resize', () => {
+            atualizarEstadoScroll();
+        }, { passive: true });
+
+        // Ações dos botões de seta
+        if (btnPrev) {
+            btnPrev.addEventListener('click', (e) => {
+                e.preventDefault();
+                container.scrollBy({ left: -200, behavior: scrollBehavior });
+            });
+        }
+
+        if (btnNext) {
+            btnNext.addEventListener('click', (e) => {
+                e.preventDefault();
+                container.scrollBy({ left: 200, behavior: scrollBehavior });
+            });
+        }
+
+        // Suporte à roda do mouse (converter scroll vertical para horizontal quando sobre o container)
+        container.addEventListener('wheel', (e) => {
+            if (window.innerWidth >= 992) return;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            if (maxScroll <= 0) return;
+
+            // Se for movimento primordialmente vertical, converte para horizontal
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                const indoParaDireita = e.deltaY > 0;
+                const podeRolar = (indoParaDireita && container.scrollLeft < maxScroll - 1) || (!indoParaDireita && container.scrollLeft > 1);
+
+                if (podeRolar) {
+                    e.preventDefault();
+                    container.scrollLeft += e.deltaY;
+                }
+            }
+        }, { passive: false });
+
+        // Acessibilidade por Teclado: ao focar uma pill, rolar para deixá-la visível
+        container.addEventListener('focusin', (e) => {
+            if (window.innerWidth >= 992) return;
+            const pill = e.target.closest('.filter-pill');
+            if (pill) {
+                pill.scrollIntoView({ inline: 'center', block: 'nearest', behavior: scrollBehavior });
+            }
+        });
+
+        // Drag-to-scroll com Mouse / Pointer
+        let isDown = false;
+        let startX = 0;
+        let scrollStart = 0;
+        let hasMoved = false;
+
+        container.addEventListener('pointerdown', (e) => {
+            if (window.innerWidth >= 992) return;
+            // Apenas botão esquerdo
+            if (e.button !== 0) return;
+
+            isDown = true;
+            hasMoved = false;
+            startX = e.pageX;
+            scrollStart = container.scrollLeft;
+            container.classList.add('is-dragging');
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isDown) return;
+            const walk = e.pageX - startX;
+            if (Math.abs(walk) > 5) {
+                hasMoved = true;
+            }
+            container.scrollLeft = scrollStart - walk;
+        });
+
+        const finalizarDrag = () => {
+            if (!isDown) return;
+            isDown = false;
+            container.classList.remove('is-dragging');
+            // Pequeno timeout para suprimir o evento click se houve arraste significativo
+            setTimeout(() => {
+                hasMoved = false;
+            }, 50);
+        };
+
+        window.addEventListener('pointerup', finalizarDrag);
+        window.addEventListener('pointercancel', finalizarDrag);
+
+        // Suprimir clique acidental no link da pill se o usuário apenas arrastou
+        container.addEventListener('click', (e) => {
+            if (hasMoved) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+
+        // Estado inicial
+        atualizarEstadoScroll();
+        // Delay mínimo para o layout estar completamente renderizado antes de calcular posições
+        setTimeout(() => {
+            atualizarEstadoScroll();
+            centralizarPillAtiva();
+        }, 80);
+    }
+
+    /**
      * Reinicializa componentes e observadores que dependem do conteúdo recém-injetado
      */
     function reinicializarCatalogo() {
@@ -72,6 +260,9 @@
 
             fadeElements.forEach(el => fadeObserver.observe(el));
         }
+
+        // Reinicializa o gerenciador de scroll das pills
+        inicializarScrollPills();
     }
 
     /**
@@ -279,5 +470,8 @@
 
         // Ouvinte de histórico do navegador
         window.addEventListener('popstate', gerenciarPopState);
+
+        // Inicializa o gerenciador de scroll das pills na carga inicial
+        inicializarScrollPills();
     });
 })();

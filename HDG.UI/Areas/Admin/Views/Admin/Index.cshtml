@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Visão Geral do Painel";
     var totalPecas = ViewBag.TotalPecas ?? 0;
     var pecasAtivas = ViewBag.PecasAtivas ?? 0;
@@ -34,8 +34,8 @@
 </div>
 
 <!-- KPI Cards Grid -->
-<div class="row g-4 mb-5">
-    <div class="col-xl-3 col-md-6">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 g-md-4 mb-4 mb-md-5">
+    <div class="col">
         <div class="stat-kpi-card">
             <div class="kpi-icon bg-danger bg-opacity-10 text-success">
                 <i class="bi bi-boxes"></i>
@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
+    <div class="col">
         <div class="stat-kpi-card">
             <div class="kpi-icon bg-warning bg-opacity-10 text-warning">
                 <i class="bi bi-chat-square-text-fill"></i>
@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
+    <div class="col">
         <div class="stat-kpi-card">
             <div class="kpi-icon bg-success bg-opacity-10 text-success">
                 <i class="bi bi-currency-dollar"></i>
@@ -75,7 +75,7 @@
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
+    <div class="col">
         <div class="stat-kpi-card">
             <div class="kpi-icon bg-info bg-opacity-10 text-info">
                 <i class="bi bi-people-fill"></i>
@@ -92,7 +92,7 @@
 <div class="row g-4">
     <!-- Recent Parts -->
     <div class="col-lg-7">
-        <div class="glass-panel p-4 h-100">
+        <div class="glass-panel p-3 p-md-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="text-white fw-bold mb-0 font-heading">
                     <i class="bi bi-box-seam text-success me-2"></i> Peças Recentes
@@ -107,7 +107,7 @@
             else
             {
                 <div class="table-responsive">
-                    <table class="table-dark-custom">
+                    <table class="table-dark-custom table-admin-responsive">
                         <thead>
                             <tr>
                                 <th>Peça</th>
@@ -121,23 +121,23 @@
                             @foreach (var peca in ultimasPecas)
                             {
                                 <tr>
-                                    <td>
+                                    <td data-label="Peça">
                                         <div class="d-flex align-items-center gap-3">
                                             <img src="@(peca.ImagemPrincipalUrl ?? "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=150&q=80")" 
-                                                 alt="@peca.Nome" class="rounded" style="width: 44px; height: 44px; object-fit: cover;" />
+                                                 alt="@peca.Nome" class="rounded admin-thumb-img" style="width: 44px; height: 44px; object-fit: cover;" />
                                             <div>
                                                 <div class="text-white fw-bold text-truncate" style="max-width: 180px;">@peca.Nome</div>
                                                 <span class="text-secondary small">#@peca.Id.ToString("D4")</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="Categoria">
                                         <span class="badge bg-dark border border-secondary text-secondary">@peca.Categoria</span>
                                     </td>
-                                    <td class="text-white font-heading fw-bold">
+                                    <td data-label="Preço" class="text-white font-heading fw-bold">
                                         R$ @peca.Preco.ToString("N2")
                                     </td>
-                                    <td>
+                                    <td data-label="Status">
                                         @if (peca.Ativo)
                                         {
                                             <span class="badge bg-success bg-opacity-25 text-success">Ativa</span>
@@ -147,8 +147,8 @@
                                             <span class="badge bg-secondary bg-opacity-25 text-secondary">Inativa</span>
                                         }
                                     </td>
-                                    <td class="text-end">
-                                        <a asp-action="PecaEditar" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom py-1 px-2" title="Editar">
+                                    <td data-label="Ação" class="text-end">
+                                        <a asp-action="PecaEditar" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom py-1 px-2" title="Editar" aria-label="Editar peça @peca.Nome">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </td>

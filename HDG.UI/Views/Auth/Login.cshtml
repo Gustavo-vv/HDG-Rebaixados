@@ -4,6 +4,10 @@
     var returnUrl = ViewData["ReturnUrl"] as string;
 }
 
+@section Head {
+    <meta name="robots" content="noindex, nofollow" />
+}
+
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-xl-10">
@@ -55,20 +59,6 @@
                             </div>
                         }
 
-                        <!-- Credenciais de Demonstração Rápidas -->
-                        <div class="p-3 rounded-3 mb-4 border border-secondary border-opacity-25" style="background: var(--accent-green-glow-subtle); border-color: var(--border-accent) !important;">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <strong class="small" style="color: var(--accent-green);"><i class="bi bi-shield-check"></i> Credenciais Demo:</strong>
-                                <button type="button" class="btn btn-sm btn-racing py-0 px-2 fw-bold" onclick="preencherAdmin()" style="font-size: 0.75rem; height: 26px;">
-                                    Auto-preencher
-                                </button>
-                            </div>
-                            <div class="text-secondary" style="font-size: 0.8rem;">
-                                <div>E-mail: <code class="text-white">admin@hdgrebaixados.com.br</code></div>
-                                <div>Senha: <code class="text-white">Admin@HDG2026!</code></div>
-                            </div>
-                        </div>
-
                         <form asp-action="Login" asp-route-returnUrl="@returnUrl" method="post">
                             @Html.AntiForgeryToken()
 
@@ -107,13 +97,4 @@
             </div>
         </div>
     </div>
-</div>
-
-@section Scripts {
-    <script>
-        function preencherAdmin() {
-            document.getElementById('inputEmail').value = 'admin@hdgrebaixados.com.br';
-            document.getElementById('inputSenha').value = 'Admin@HDG2026!';
-        }
-    </script>
-}
+</div>

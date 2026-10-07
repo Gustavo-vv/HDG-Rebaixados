@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HDG.Application.DTOs.AvaliacaoDto>
+@model IEnumerable<HDG.Application.DTOs.AvaliacaoDto>
 @{
     ViewData["Title"] = "Moderação de Avaliações";
 }
@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="glass-panel p-4">
+<div class="glass-panel p-3 p-md-4">
     @if (!Model.Any())
     {
         <div class="text-center py-5 text-secondary">
@@ -22,7 +22,7 @@
     else
     {
         <div class="table-responsive">
-            <table class="table-dark-custom">
+            <table class="table-dark-custom table-admin-responsive">
                 <thead>
                     <tr>
                         <th>Data</th>
@@ -38,14 +38,14 @@
                     @foreach (var av in Model)
                     {
                         <tr>
-                            <td class="small text-secondary">@av.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td class="text-white fw-bold">@av.NomeCliente</td>
-                            <td>
+                            <td data-label="Data" class="small text-secondary">@av.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td data-label="Cliente" class="text-white fw-bold">@av.NomeCliente</td>
+                            <td data-label="Peça">
                                 <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@av.PecaId" target="_blank" class="text-decoration-none text-light">
                                     @av.PecaNome <i class="bi bi-box-arrow-up-right small text-secondary"></i>
                                 </a>
                             </td>
-                            <td>
+                            <td data-label="Nota">
                                 <div class="rating-stars small">
                                     @for (int i = 1; i <= 5; i++)
                                     {
@@ -61,10 +61,10 @@
                                     <span class="text-white ms-1">(@av.Nota)</span>
                                 </div>
                             </td>
-                            <td class="small text-secondary" style="max-width: 300px;">
+                            <td data-label="Comentário" class="small text-secondary" style="max-width: 300px;">
                                 "@av.Comentario"
                             </td>
-                            <td>
+                            <td data-label="Status">
                                 @if (av.Aprovada)
                                 {
                                     <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50">
@@ -78,20 +78,20 @@
                                     </span>
                                 }
                             </td>
-                            <td class="text-end">
+                            <td data-label="Ações" class="text-end">
                                 <div class="d-flex justify-content-end gap-2">
                                     @if (!av.Aprovada)
                                     {
                                         <form asp-action="AprovarAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-racing" title="Aprovar Comentário">
+                                            <button type="submit" class="btn btn-sm btn-racing" title="Aprovar Comentário" aria-label="Aprovar avaliação de @av.NomeCliente">
                                                 <i class="bi bi-check-lg"></i> Aprovar
                                             </button>
                                         </form>
                                     }
                                     <form asp-action="ExcluirAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline" onsubmit="return confirm('Excluir esta avaliação permanentemente?');">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir">
+                                        <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir" aria-label="Excluir avaliação de @av.NomeCliente">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>

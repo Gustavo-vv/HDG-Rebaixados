@@ -17,8 +17,30 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Application (AutoMapper, Serviços de Negócio)
 builder.Services.AddApplication();
 
-// MVC com Controllers e Views
-builder.Services.AddControllersWithViews();
+// MVC com Controllers e Views com validação global de Anti-Forgery Token
+builder.Services.AddControllersWithViews(options =>
+{
+    // Aplica validação automática de CSRF em todas as ações de escrita (POST, PUT, DELETE, PATCH)
+    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
+});
+
+// Rate Limiting para rotas críticas (Login e Registro)
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("AuthRateLimitPolicy", httpContext =>
+    {
+        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+        return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: clientIp,
+            factory: _ => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
+});
 
 // Configuração do validador de carimbo de segurança (Security Stamp)
 builder.Services.Configure<SecurityStampValidatorOptions>(options =>
@@ -26,7 +48,7 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
     options.ValidationInterval = TimeSpan.Zero;
 });
 
-// Configuração do Cookie do Identity
+// Configuração do Cookie do Identity com endurecimento de segurança
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "HDGRebaixados.Auth";
@@ -35,6 +57,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Auth/AcessoNegado";
     options.ExpireTimeSpan = TimeSpan.FromHours(8);
     options.SlidingExpiration = true;
+
+    // Proteções avançadas de cookie
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
+
     options.Events.OnValidatePrincipal = async context =>
     {
         if (context.Principal == null)
@@ -89,9 +119,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Middleware de cabeçalhos de segurança (Security Headers)
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    context.Response.Headers.Append("Referrer-Policy", "strict-origin-when-cross-origin");
+    context.Response.Headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+    await next();
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

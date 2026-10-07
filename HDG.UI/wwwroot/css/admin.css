@@ -1,0 +1,524 @@
+:root {
+    --admin-topbar-h: 64px;
+    --admin-sidebar-w: 272px;
+    --admin-z-content: 1;
+    --admin-z-sidebar: 1020;
+    --admin-z-topbar: 1040;
+    --admin-z-fab: 1030;
+    --admin-z-modal: 1050;
+}
+
+@media (max-width: 991.98px) {
+    :root {
+        --admin-topbar-h: 58px;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   1. TOPBAR & CABEÇALHO ADMIN
+   -------------------------------------------------------------------------- */
+.admin-topbar {
+    height: var(--admin-topbar-h);
+    background: rgba(6, 8, 9, 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: var(--admin-z-topbar);
+    padding: 0 1.25rem;
+}
+
+.admin-logo-img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 10px var(--accent-green-glow-subtle));
+    transition: height 0.2s ease;
+}
+
+.admin-badge-top {
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    color: #041009;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+}
+
+/* Botão "Ver Catálogo" com alto contraste AA */
+.admin-btn-catalog {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 0 0.95rem;
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-light);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.admin-btn-catalog i {
+    color: var(--accent-green);
+    font-size: 0.95rem;
+    transition: transform 0.2s ease;
+}
+
+.admin-btn-catalog:hover,
+.admin-btn-catalog:focus {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-green);
+    color: var(--accent-green) !important;
+    box-shadow: 0 0 12px var(--accent-green-glow-subtle);
+}
+
+.admin-btn-catalog:hover i {
+    transform: translate(2px, -2px);
+}
+
+.admin-toggle-sidebar-btn {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    border-radius: 8px;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-toggle-sidebar-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+
+@media (max-width: 991.98px) {
+    .admin-topbar {
+        padding: 0 0.75rem;
+    }
+
+    .admin-logo-img {
+        height: 38px;
+    }
+
+    .admin-badge-top {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.45rem;
+    }
+
+    .admin-btn-catalog {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+    }
+
+    .admin-btn-catalog span {
+        display: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   2. SHELL DO ADMIN: CSS GRID (DESKTOP) E OFFCANVAS (MOBILE)
+   -------------------------------------------------------------------------- */
+.admin-shell-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - var(--admin-topbar-h));
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .admin-shell-grid {
+        grid-template-columns: var(--admin-sidebar-w) minmax(0, 1fr);
+    }
+
+    .admin-sidebar-desktop {
+        position: sticky;
+        top: var(--admin-topbar-h);
+        height: calc(100vh - var(--admin-topbar-h));
+        overflow-y: auto;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-subtle);
+        padding: 1.5rem 1rem;
+        z-index: var(--admin-z-sidebar);
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-subtle) transparent;
+    }
+
+    .admin-sidebar-desktop::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .admin-sidebar-desktop::-webkit-scrollbar-thumb {
+        background: var(--border-subtle);
+        border-radius: 4px;
+    }
+
+    .admin-offcanvas-mobile {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .admin-sidebar-desktop {
+        display: none !important;
+    }
+
+    .admin-offcanvas-mobile {
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-subtle);
+        width: 290px;
+        max-width: 85vw;
+        color: var(--text-primary);
+        z-index: var(--admin-z-modal);
+    }
+
+    .admin-offcanvas-mobile .offcanvas-header {
+        border-bottom: 1px solid var(--border-subtle);
+        padding: 1.25rem 1rem;
+    }
+
+    .admin-offcanvas-mobile .offcanvas-body {
+        padding: 1.25rem 1rem;
+    }
+}
+
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.admin-nav-item i {
+    font-size: 1.15rem;
+    width: 20px;
+    text-align: center;
+}
+
+.admin-nav-item:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.admin-nav-item.active {
+    color: #041009 !important;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)) !important;
+    font-weight: 800;
+    box-shadow: 0 4px 15px var(--accent-green-glow);
+}
+
+.admin-nav-item.active i {
+    color: #041009 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. CONTEÚDO PRINCIPAL & PADDING DE SEGURANÇA
+   -------------------------------------------------------------------------- */
+.admin-main-content {
+    min-height: calc(100vh - var(--admin-topbar-h));
+    background: var(--bg-main);
+    padding: 1.75rem 1.5rem;
+    width: 100%;
+    min-width: 0; /* Previne overflow por grid children */
+    overflow-x: hidden;
+    z-index: var(--admin-z-content);
+    position: relative;
+}
+
+.admin-content-container {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+    .admin-main-content {
+        padding: 2.25rem 2.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-main-content {
+        padding: 1rem 0.85rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   4. DASHBOARD KPIS (GRID ADAPTATIVO COM CLAMP)
+   -------------------------------------------------------------------------- */
+.stat-kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-kpi-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+}
+
+.stat-kpi-card h3 {
+    font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    font-family: var(--font-heading);
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-kpi-card p {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+
+.kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. TABELAS UNIVERSAIS EM CARDS RESPONSIVOS (< 768px)
+   -------------------------------------------------------------------------- */
+.table-admin-responsive {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table-admin-responsive th {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 10px 14px;
+    border: none;
+}
+
+.table-admin-responsive td {
+    background: var(--bg-card);
+    padding: 14px;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+}
+
+.table-admin-responsive tr td:first-child {
+    border-left: 1px solid var(--border-subtle);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-admin-responsive tr td:last-child {
+    border-right: 1px solid var(--border-subtle);
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+@media (max-width: 767.98px) {
+    .table-admin-responsive thead {
+        display: none !important;
+    }
+
+    .table-admin-responsive,
+    .table-admin-responsive tbody,
+    .table-admin-responsive tr,
+    .table-admin-responsive td {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .table-admin-responsive tr {
+        margin-bottom: 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 12px !important;
+        padding: 0.85rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .table-admin-responsive tr td {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0.25rem !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 0 !important;
+        text-align: right;
+    }
+
+    .table-admin-responsive tr td:last-child {
+        border-bottom: none !important;
+        padding-top: 0.85rem !important;
+        justify-content: flex-end;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .table-admin-responsive tr td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        text-align: left;
+        margin-right: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .table-admin-responsive td .btn-group,
+    .table-admin-responsive td .d-flex {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .table-admin-responsive td .btn {
+        min-width: 44px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+    }
+}
+
+/* Miniaturas padronizadas */
+.admin-thumb-img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: #000;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. BOTÃO FLUTUANTE DE AÇÃO (FAB) - MOBILE
+   -------------------------------------------------------------------------- */
+.admin-fab-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark));
+    color: #041009;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 25px var(--accent-green-glow);
+    z-index: 1030;
+    text-decoration: none;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-fab-btn:hover,
+.admin-fab-btn:focus {
+    color: #041009;
+    transform: scale(1.08);
+}
+
+@media (max-width: 991.98px) {
+    .admin-fab-btn {
+        display: flex;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   7. FORMULÁRIOS & BARRA DE AÇÕES FIXA MOBILE
+   -------------------------------------------------------------------------- */
+.admin-main-content .form-control-custom,
+.admin-main-content .form-select-custom {
+    min-height: 44px;
+    font-size: 1rem; /* 16px evita zoom no iOS Safari */
+    border-radius: 8px;
+}
+
+@media (max-width: 767.98px) {
+    .admin-form-actions-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(12, 15, 18, 0.96);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid var(--border-subtle);
+        padding: 0.85rem 1rem;
+        z-index: 1020;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .admin-form-actions-bar .btn {
+        flex: 1;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-has-fixed-actions {
+        padding-bottom: 90px !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   8. MODAIS FULLSCREEN NO MOBILE
+   -------------------------------------------------------------------------- */
+@media (max-width: 575.98px) {
+    .modal-fullscreen-sm-down .modal-dialog {
+        width: 100vw;
+        max-width: none;
+        height: 100%;
+        margin: 0;
+    }
+
+    .modal-fullscreen-sm-down .modal-content {
+        height: 100%;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .modal-fullscreen-sm-down .modal-body {
+        overflow-y: auto;
+    }
+}

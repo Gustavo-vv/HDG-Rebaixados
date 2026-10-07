@@ -1,5 +1,9 @@
 @{
-    ViewData["Title"] = "Acesso Restrito - HDG Rebaixados";
+    ViewData["Title"] = "Acesso Negado - HDG Rebaixados";
+}
+
+@section Head {
+    <meta name="robots" content="noindex, nofollow" />
 }
 
 <div class="container py-5 text-center">
@@ -10,17 +14,29 @@
     </div>
     <div class="glass-panel p-5 max-w-600 mx-auto border border-danger border-opacity-50 shadow-lg">
         <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.4);">
-            <i class="bi bi-shield-lock-fill display-3 text-danger"></i>
+            <i class="bi bi-shield-x display-3 text-danger"></i>
         </div>
-        <h2 class="text-white fw-bold font-heading text-uppercase">Acesso Restrito à Garagem</h2>
-        <p class="text-secondary mb-4">Esta área é exclusiva para administradores e preparadores autorizados da HDG Rebaixados. Faça login com uma conta com privilégios de gestão.</p>
-        <div class="d-flex justify-content-center flex-wrap gap-3">
+        <h2 class="text-white fw-bold font-heading text-uppercase">Acesso Não Permitido</h2>
+        <p class="text-secondary mb-4">Você não tem permissão para acessar esta página.</p>
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
             <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark-custom">
-                <i class="bi bi-house-door me-1"></i> Voltar ao Catálogo
+                <i class="bi bi-house-door me-1"></i> Voltar ao Início
             </a>
-            <a asp-action="Login" class="btn btn-racing">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Trocar de Conta
-            </a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline m-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-racing">
+                        <i class="bi bi-box-arrow-right me-1"></i> Trocar de Conta
+                    </button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-racing">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Fazer Login
+                </a>
+            }
         </div>
     </div>
 </div>

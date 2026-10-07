@@ -3,6 +3,7 @@ using HDG.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace HDG.Infrastructure.Data;
 
@@ -24,25 +25,55 @@ public static class DbSeeder
             }
         }
 
-        // 2. Admin Inicial
-        var adminEmail = "admin@hdgrebaixados.com.br";
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
-        if (adminUser == null)
-        {
-            var admin = new ApplicationUser
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                NomeCompleto = "Administrador HDG",
-                EmailConfirmed = true,
-                Ativo = true,
-                DataCadastro = DateTime.UtcNow
-            };
+        // 2. Admin Inicial via Configuração Segura (user-secrets / env vars)
+        var configuration = serviceProvider.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
+        var env = serviceProvider.GetService<Microsoft.Extensions.Hosting.IHostEnvironment>();
+        var logger = serviceProvider.GetService<Microsoft.Extensions.Logging.ILogger<HdgDbContext>>();
 
-            var result = await userManager.CreateAsync(admin, "Admin@HDG2026!");
-            if (result.Succeeded)
+        var adminEmail = configuration?["Admin:Email"];
+        var adminPassword = configuration?["Admin:Password"];
+
+        // Em desenvolvimento, se não configurado via user-secrets/env, carrega padrão local
+        var isDev = string.Equals(env?.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(adminEmail) && isDev)
+        {
+            adminEmail = configuration?["Admin:Email"] ?? "admin@hdgrebaixados.com.br";
+        }
+
+        if (string.IsNullOrWhiteSpace(adminPassword) && isDev)
+        {
+            adminPassword = configuration?["Admin:Password"] ?? "Admin@HDG2026!";
+        }
+
+        if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+        {
+            logger?.LogWarning("AVISO DE SEGURANÇA: Credenciais de administrador inicial ('Admin:Email' e 'Admin:Password') não configuradas. Nenhum usuário administrador inicial foi criado.");
+        }
+        else
+        {
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            if (adminUser == null)
             {
-                await userManager.AddToRoleAsync(admin, "Admin");
+                var admin = new ApplicationUser
+                {
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    NomeCompleto = "Administrador HDG",
+                    EmailConfirmed = true,
+                    Ativo = true,
+                    DataCadastro = DateTime.UtcNow
+                };
+
+                var result = await userManager.CreateAsync(admin, adminPassword);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                    logger?.LogInformation("Usuário administrador inicial criado com sucesso: {Email}", adminEmail);
+                }
+                else
+                {
+                    logger?.LogWarning("Falha ao criar usuário administrador inicial: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
             }
         }
 

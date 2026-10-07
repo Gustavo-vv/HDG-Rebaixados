@@ -3,7 +3,7 @@
     ViewData["Title"] = $"{Model.Nome} - Detalhes do Setup";
     var avaliacoes = ViewBag.Avaliacoes as IEnumerable<HDG.Application.DTOs.AvaliacaoDto> ?? Enumerable.Empty<HDG.Application.DTOs.AvaliacaoDto>();
     var whatsAppNumero = ViewBag.WhatsAppNumero as string ?? "5511999999999";
-    var msgZap = $"Olá! Tenho interesse na peça '{Model.Nome}' que vi no site da HDG Rebaixados (Código #{Model.Id:D4} - Valor: R$ {Model.Preco:N2}). Gostaria de tirar dúvidas técnicas e fechar o pedido.";
+    var msgZap = $"Olá! Tenho interesse na peça '{Model.Nome}' que vi no site da HDG Rebaixados (Valor: R$ {Model.Preco:N2}). Gostaria de tirar dúvidas técnicas e fechar o pedido.";
     var urlZap = $"https://wa.me/{whatsAppNumero}?text={Uri.EscapeDataString(msgZap)}";
 
     string ObterNomeAmigavelCategoria(HDG.Domain.Enums.CategoriaPeca cat) => cat switch
@@ -82,7 +82,6 @@
         <div class="col-lg-6">
             <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
                 <span class="badge" style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: #000; font-weight: 800; text-transform: uppercase;">@ObterNomeAmigavelCategoria(Model.Categoria)</span>
-                <span class="badge bg-dark border border-secondary text-secondary font-display" style="letter-spacing: 0.05em;">CÓDIGO #@Model.Id.ToString("D4")</span>
                 <span class="badge" style="background: var(--accent-green-glow-subtle); border: 1px solid var(--accent-green); color: var(--accent-green); font-weight: 700;">PRONTA ENTREGA</span>
             </div>
 
