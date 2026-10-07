@@ -219,12 +219,13 @@
     </div>
 </div>
 
+@section Modais {
 <!-- ======================================================== -->
 <!-- MODAL: EDITAR USUÁRIO -->
 <!-- ======================================================== -->
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-labelledby="modalEditarUsuarioLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content glass-panel border border-secondary border-opacity-50 text-white" style="background: rgba(14, 18, 20, 0.96);">
+        <div class="modal-content border border-secondary border-opacity-50 text-white" style="background: #0e1214; pointer-events: auto;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold" id="modalEditarUsuarioLabel">
                     <i class="bi bi-pencil-square text-accent-green me-2"></i>Editar Usuário
@@ -283,7 +284,7 @@
 <!-- ======================================================== -->
 <div class="modal fade" id="modalAlterarSenha" tabindex="-1" aria-labelledby="modalAlterarSenhaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content glass-panel border border-secondary border-opacity-50 text-white" style="background: rgba(14, 18, 20, 0.96);">
+        <div class="modal-content border border-secondary border-opacity-50 text-white" style="background: #0e1214; pointer-events: auto;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold" id="modalAlterarSenhaLabel">
                     <i class="bi bi-key-fill text-warning me-2"></i>Redefinir Senha
@@ -320,7 +321,7 @@
                     </div>
 
                     <!-- Checklist de Requisitos -->
-                    <div class="glass-panel p-2 mb-3 bg-dark bg-opacity-50">
+                    <div class="p-2 mb-3 bg-dark rounded border border-secondary border-opacity-25">
                         <div class="row g-1">
                             <div class="col-6">
                                 <div class="pwd-rule-item" id="ruleLength"><i class="bi bi-circle"></i> 8+ caracteres</div>
@@ -374,7 +375,7 @@
 <!-- ======================================================== -->
 <div class="modal fade" id="modalAlterarPerfil" tabindex="-1" aria-labelledby="modalAlterarPerfilLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content glass-panel border border-secondary border-opacity-50 text-white" style="background: rgba(14, 18, 20, 0.96);">
+        <div class="modal-content border border-secondary border-opacity-50 text-white" style="background: #0e1214; pointer-events: auto;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold" id="modalAlterarPerfilLabel">
                     <i class="bi bi-person-gear text-info me-2"></i>Alterar Perfil de Acesso
@@ -428,7 +429,7 @@
 <!-- ======================================================== -->
 <div class="modal fade" id="modalAlternarStatus" tabindex="-1" aria-labelledby="modalAlternarStatusLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content glass-panel border border-secondary border-opacity-50 text-white" style="background: rgba(14, 18, 20, 0.96);">
+        <div class="modal-content border border-secondary border-opacity-50 text-white" style="background: #0e1214; pointer-events: auto;">
             <div class="modal-header border-secondary border-opacity-25">
                 <h5 class="modal-title font-heading fw-bold" id="modalAlternarStatusLabel">
                     <span id="statusModalIcon"></span> <span id="statusModalTitle">Confirmar Ação</span>
@@ -458,6 +459,7 @@
         </div>
     </div>
 </div>
+}
 
 @section Scripts {
 <script>

@@ -71,10 +71,11 @@
     </div>
 </div>
 
+@section Modais {
 <!-- Modal de Confirmação para Recusar / Excluir Avaliação -->
 <div class="modal fade" id="modalRecusarAvaliacao" tabindex="-1" aria-labelledby="modalRecusarAvaliacaoLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-panel border border-danger border-opacity-50" style="background: var(--bg-card);">
+        <div class="modal-content border border-danger border-opacity-50" style="background: var(--bg-card); pointer-events: auto;">
             <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
                 <h5 class="modal-title text-danger fw-bold font-heading d-flex align-items-center gap-2" id="modalRecusarAvaliacaoLabel">
                     <i class="bi bi-exclamation-triangle-fill"></i> Recusar Avaliação
@@ -98,6 +99,7 @@
         </div>
     </div>
 </div>
+}
 
 @section Scripts {
     <script>

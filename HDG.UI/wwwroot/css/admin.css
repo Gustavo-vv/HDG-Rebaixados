@@ -2,10 +2,12 @@
     --admin-topbar-h: 64px;
     --admin-sidebar-w: 272px;
     --admin-z-content: 1;
-    --admin-z-sidebar: 1020;
-    --admin-z-topbar: 1040;
-    --admin-z-fab: 1030;
-    --admin-z-modal: 1050;
+    --admin-z-fab: 1020;
+    --admin-z-sidebar: 1040;
+    --admin-z-topbar: 1030;
+    --admin-z-modal-backdrop: 1050;
+    --admin-z-modal: 1055;
+    --admin-z-toast: 1090;
 }
 
 @media (max-width: 991.98px) {
@@ -521,4 +523,25 @@
     .modal-fullscreen-sm-down .modal-body {
         overflow-y: auto;
     }
+}
+
+/* --------------------------------------------------------------------------
+   9. MODAIS & BACKDROP ISOLATION (STACKING CONTEXT SAFETY)
+   -------------------------------------------------------------------------- */
+.modal-backdrop {
+    z-index: var(--admin-z-modal-backdrop, 1050) !important;
+}
+
+.modal {
+    z-index: var(--admin-z-modal, 1055) !important;
+}
+
+.modal-dialog {
+    z-index: var(--admin-z-modal, 1055);
+}
+
+.modal-content {
+    pointer-events: auto !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }

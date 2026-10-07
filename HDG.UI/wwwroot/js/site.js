@@ -226,5 +226,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // 8. Rede de Segurança Global para Modais do Bootstrap (Stacking Context & Acessibilidade)
+    // Garante que todo modal seja filho direto de <body>, com foco automático e sem backdrops presos
+    document.addEventListener('show.bs.modal', (event) => {
+        const modal = event.target;
+        if (modal && modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    });
+
+    document.addEventListener('shown.bs.modal', (event) => {
+        const modal = event.target;
+        if (modal) {
+            // Foco no primeiro campo interativo não oculto
+            const firstInteractive = modal.querySelector('input:not([type="hidden"]):not([disabled]):not([readonly]), select:not([disabled]), textarea:not([disabled]), button.btn-primary:not([disabled]), button.btn-racing:not([disabled]), button[type="submit"]:not([disabled])');
+            if (firstInteractive) {
+                firstInteractive.focus();
+            }
+        }
+    });
+
+    document.addEventListener('hidden.bs.modal', () => {
+        // Se nenhum modal estiver visível, garante limpeza de classes ou backdrops órfãos
+        const openModals = document.querySelectorAll('.modal.show');
+        if (openModals.length === 0) {
+            const lingeringBackdrops = document.querySelectorAll('.modal-backdrop');
+            lingeringBackdrops.forEach(b => b.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('overflow');
+            document.body.style.removeProperty('padding-right');
+        }
+    });
 });
+
 

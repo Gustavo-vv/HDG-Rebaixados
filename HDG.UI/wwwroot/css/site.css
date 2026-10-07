@@ -50,6 +50,14 @@
     --btn-radius: 8px;
     --btn-font-size: 0.95rem;
     --btn-padding: 0 24px;
+
+    /* Escala Global de Z-Index */
+    --z-fab: 1020;
+    --z-header: 1030;
+    --z-sidebar: 1040;
+    --z-modal-backdrop: 1050;
+    --z-modal: 1055;
+    --z-toast: 1090;
 }
 
 /* Base Reset & Smooth Scroll */
@@ -1858,5 +1866,31 @@ h1, h2, h3, h4, h5, h6, .font-heading {
         animation: none;
     }
 }
+
+/* ==========================================================================
+   MODAL & BACKDROP STACKING CONTEXT SAFETY
+   ========================================================================== */
+.modal-backdrop {
+    z-index: var(--z-modal-backdrop, 1050) !important;
+}
+
+.modal {
+    z-index: var(--z-modal, 1055) !important;
+}
+
+.modal-dialog {
+    z-index: var(--z-modal, 1055);
+}
+
+.modal-content {
+    pointer-events: auto !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.toast-container {
+    z-index: var(--z-toast, 1090) !important;
+}
+
 
 

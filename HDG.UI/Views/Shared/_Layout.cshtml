@@ -273,7 +273,7 @@
         var primeiroNome = TempData["PrimeiroNomeAvaliacao"] as string;
         <div class="modal fade" id="modalSucessoAvaliacao" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="modalSucessoTitulo" aria-hidden="false">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content glass-panel border border-secondary border-opacity-25 shadow-lg text-center p-4 p-md-5" style="background: radial-gradient(circle at 50% 0%, rgba(154, 224, 0, 0.12) 0%, rgba(12, 15, 18, 0.98) 75%);">
+                <div class="modal-content border border-secondary border-opacity-25 shadow-lg text-center p-4 p-md-5" style="background: radial-gradient(circle at 50% 0%, rgba(154, 224, 0, 0.12) 0%, rgba(12, 15, 18, 0.98) 75%); pointer-events: auto;">
                     <div class="d-flex justify-content-end w-100">
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
@@ -309,6 +309,9 @@
             </div>
         </div>
     }
+
+    <!-- Seção de Modais Renderizados no Nível Raiz do Body -->
+    @await RenderSectionAsync("Modais", required: false)
 
     <!-- Container Global de Toasts (Notificações Flutuantes no Canto Superior Direito) -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
