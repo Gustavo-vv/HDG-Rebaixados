@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HDG Rebaixados | Especialistas em Carros Baixos & Peças Esportivas</title>
-    <meta name="description" content="Catálogo completo de suspensão a ar, fixa, rosca, rodas exclusivas e freios de alta performance na HDG Rebaixados." />
+    <title>@ViewData["Title"] - HDG Rebaixados | Stance, Suspensões & Peças Automotivas</title>
+    <meta name="description" content="Kits completos de suspensão a ar, fixa e rosca, rodas tala larga e freios esportivos na HDG Rebaixados. Projetos exclusivos para carros baixos com envio Brasil." />
 
     <!-- Favicon & Icons -->
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
@@ -13,10 +13,10 @@
     <link rel="icon" type="image/png" sizes="192x192" href="~/img/favicon-192x192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="~/img/apple-touch-icon.png" />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Bebas Neue (Display/Títulos), Outfit (Heading/Preços) & Inter (Corpo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,67 +26,70 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <!-- Top Announcement Strip -->
-    <div class="py-2 text-center announcement-strip">
-        ⚡ Especialistas em Suspensão a Ar, Rosca, Fixa e Rodas Tala Larga | Atendimento Exclusivo no WhatsApp
+    <!-- Faixa Superior de Destaque -->
+    <div class="announcement-strip text-center py-1">
+        <div class="container d-flex justify-content-center align-items-center gap-2">
+            <span>⚡ ESPECIALISTAS EM AR, ROSCA, FIXA E TALAS LARGAS</span>
+            <span class="d-none d-md-inline text-dark fw-bold">•</span>
+            <span class="d-none d-md-inline">ENVIO COM NOTA FISCAL & GARANTIA PARA TODO O BRASIL</span>
+        </div>
     </div>
 
-    <!-- Main Navigation Bar -->
+    <!-- Navegação Principal com Backdrop Blur Refinado -->
     <header class="glass-nav">
         <nav class="navbar navbar-expand-lg py-2">
             <div class="container">
-                <!-- Logo Oficial -->
+                <!-- Marca & Logo Oficial -->
                 <a class="navbar-brand hdg-logo-link" asp-area="" asp-controller="Home" asp-action="Index" title="HDG Rebaixados - Página Inicial">
                     <img src="~/img/logo.png" alt="HDG Rebaixados" class="hdg-logo-img" />
                 </a>
 
-                <!-- Mobile Menu Toggler (Hambúrguer) -->
-                <button class="navbar-toggler border-0 text-white p-2" type="button" data-bs-toggle="collapse" data-bs-target="#hdgNavbar" aria-controls="hdgNavbar" aria-expanded="false" aria-label="Menu de Navegação">
+                <!-- Botão Menu Mobile (Hambúrguer) -->
+                <button class="navbar-toggler border-0 text-white p-2" type="button" data-bs-toggle="collapse" data-bs-target="#hdgNavbar" aria-controls="hdgNavbar" aria-expanded="false" aria-label="Abrir Menu Principal">
                     <i class="bi bi-list fs-1 text-white"></i>
                 </button>
 
-                <!-- Navigation Links & Profile Dropdown -->
+                <!-- Itens de Navegação & Ações -->
                 <div class="collapse navbar-collapse" id="hdgNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
+                    <ul class="navbar-nav me-auto mb-3 mb-lg-0 ms-lg-4 gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-grid-fill me-1"></i> Catálogo Geral
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-grid-fill me-1"></i> Catálogo
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="1">
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="1">
                                 Suspensão
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="2">
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="2">
                                 Rodas
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="3">
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="3">
                                 Freios
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="5">
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Index" asp-route-categoria="5">
                                 Escapamento
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-link-custom text-nowrap" asp-area="" asp-controller="Home" asp-action="Sobre">
+                            <a class="nav-link nav-link-custom" asp-area="" asp-controller="Home" asp-action="Sobre">
                                 Sobre Nós
                             </a>
                         </li>
                     </ul>
 
-                    <!-- Actions & Profile -->
+                    <!-- Perfil & Botão Chamar no Zap -->
                     <div class="d-flex align-items-center gap-3">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <!-- User Profile Dropdown (Sem exibir o e-mail no cabeçalho) -->
                             <div class="dropdown">
-                                <button class="btn btn-profile-menu dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Menu de Perfil">
+                                <button class="btn btn-profile-menu dropdown-toggle" type="button" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Minha Conta">
                                     <i class="bi bi-person-circle fs-5"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border-secondary p-2 shadow-lg" aria-labelledby="userMenuDropdown" style="min-width: 200px;">
@@ -94,16 +97,16 @@
                                     {
                                         <li>
                                             <a asp-area="Admin" asp-controller="Admin" asp-action="Index" class="dropdown-item d-flex align-items-center gap-2 py-2 text-warning fw-bold">
-                                                <i class="bi bi-shield-lock-fill"></i> Painel Admin
+                                                <i class="bi bi-speedometer2"></i> Painel Admin
                                             </a>
                                         </li>
-                                        <li><hr class="dropdown-divider border-secondary border-opacity-50 my-1"></li>
+                                        <li><hr class="dropdown-divider border-secondary border-opacity-25 my-1"></li>
                                     }
                                     <li>
                                         <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger">
-                                                <i class="bi bi-box-arrow-right"></i> Sair
+                                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger fw-bold">
+                                                <i class="bi bi-box-arrow-right"></i> Sair da Conta
                                             </button>
                                         </form>
                                     </li>
@@ -112,13 +115,12 @@
                         }
                         else
                         {
-                            <a asp-area="" asp-controller="Auth" asp-action="Login" class="nav-link nav-link-custom text-nowrap">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+                            <a asp-area="" asp-controller="Auth" asp-action="Login" class="nav-link nav-link-custom">
+                                <i class="bi bi-person-fill me-1"></i> Entrar
                             </a>
                         }
 
-                        <!-- WhatsApp em destaque único -->
-                        <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Gostaria de tirar dúvidas sobre peças para meu carro na HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp text-nowrap">
+                        <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Quero montar um setup para meu carro com a HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp text-nowrap">
                             <i class="bi bi-whatsapp"></i> <span>Falar no Zap</span>
                         </a>
                     </div>
@@ -127,76 +129,96 @@
         </nav>
     </header>
 
-    <!-- Main Content Body -->
+    <!-- Corpo de Conteúdo Principal -->
     <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
 
-    <!-- Professional Footer -->
+    <!-- Botão Flutuante de WhatsApp com Pulso Neon -->
+    <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Gostaria de falar com um preparador da HDG Rebaixados.")" 
+       target="_blank" 
+       class="whatsapp-float-btn" 
+       title="Falar no WhatsApp com a Garagem HDG" 
+       aria-label="Atendimento via WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+        <span class="whatsapp-float-pulse"></span>
+    </a>
+
+    <!-- Rodapé Premium Autêntico (4 Colunas) -->
     <footer class="footer-custom">
         <div class="container">
-            <div class="row g-4 mb-4">
+            <div class="row g-4 mb-5">
+                <!-- Coluna 1: Marca & Filosofia -->
                 <div class="col-lg-4 col-md-6">
                     <a asp-area="" asp-controller="Home" asp-action="Index" class="hdg-logo-link mb-3 d-inline-block">
                         <img src="~/img/logo.png" alt="HDG Rebaixados" style="height: 48px; width: auto;" />
                     </a>
                     <p class="text-secondary small mb-3">
-                        Referência em suspensões especiais, rodas tala larga e peças preparadas de alta performance no Brasil. Montamos o projeto perfeito para o seu carro andar no chão com segurança.
+                        A autoridade em suspensão especial, rodas esportivas e projetos stance de alto calibre no Brasil. O seu carro no chão com segurança, tecnologia e alinhamento milimétrico.
                     </p>
-                    <div class="d-flex gap-2">
-                        <span class="badge bg-dark border border-secondary text-secondary p-2"><i class="bi bi-shield-check text-success"></i> Peças Garantidas</span>
-                        <span class="badge bg-dark border border-secondary text-secondary p-2"><i class="bi bi-truck text-warning"></i> Envio Brasil</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-dark border border-secondary text-secondary p-2">
+                            <i class="bi bi-shield-check text-success me-1"></i> 100% Peças com NF
+                        </span>
+                        <span class="badge bg-dark border border-secondary text-secondary p-2">
+                            <i class="bi bi-truck text-warning me-1"></i> Envio Brasil Todo
+                        </span>
                     </div>
                 </div>
 
+                <!-- Coluna 2: Categorias Principais -->
                 <div class="col-lg-2 col-md-3 col-6">
-                    <h6 class="text-white fw-bold mb-3 font-heading">Categorias</h6>
-                    <ul class="list-unstyled text-secondary small">
-                        <li class="mb-2"><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão a Ar</a></li>
-                        <li class="mb-2"><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão de Rosca</a></li>
-                        <li class="mb-2"><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão Fixa</a></li>
-                        <li class="mb-2"><a href="/?categoria=2" class="text-secondary text-decoration-none">Rodas Esportivas</a></li>
-                        <li class="mb-2"><a href="/?categoria=3" class="text-secondary text-decoration-none">Big Brakes & Discos</a></li>
+                    <h6 class="text-white fw-bold mb-3 font-heading text-uppercase">Categorias</h6>
+                    <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
+                        <li><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão a Ar</a></li>
+                        <li><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão de Rosca</a></li>
+                        <li><a href="/?categoria=1" class="text-secondary text-decoration-none">Suspensão Fixa</a></li>
+                        <li><a href="/?categoria=2" class="text-secondary text-decoration-none">Rodas Tala Larga</a></li>
+                        <li><a href="/?categoria=3" class="text-secondary text-decoration-none">Freios & Big Brakes</a></li>
+                        <li><a href="/?categoria=5" class="text-secondary text-decoration-none">Escapamento & Ronco</a></li>
                     </ul>
                 </div>
 
+                <!-- Coluna 3: Atendimento & Garagem -->
                 <div class="col-lg-3 col-md-3 col-6">
-                    <h6 class="text-white fw-bold mb-3 font-heading">Atendimento & Garagem</h6>
-                    <ul class="list-unstyled text-secondary small">
-                        <li class="mb-2"><i class="bi bi-geo-alt text-success me-2"></i> São Paulo - SP, Brasil</li>
-                        <li class="mb-2"><i class="bi bi-clock text-warning me-2"></i> Seg a Sex: 08h às 18h | Sáb: 08h às 13h</li>
-                        <li class="mb-2"><i class="bi bi-whatsapp text-success me-2"></i> (11) 99999-9999</li>
-                        <li class="mb-2"><i class="bi bi-envelope text-info me-2"></i> contato@hdgrebaixados.com.br</li>
+                    <h6 class="text-white fw-bold mb-3 font-heading text-uppercase">Atendimento & Garagem</h6>
+                    <ul class="list-unstyled small text-secondary mb-0 d-flex flex-column gap-2">
+                        <li><i class="bi bi-geo-alt text-success me-2"></i> São Paulo - SP, Brasil</li>
+                        <li><i class="bi bi-clock text-warning me-2"></i> Seg a Sex: 08h às 18h | Sáb: 08h às 13h</li>
+                        <li><i class="bi bi-whatsapp text-success me-2"></i> (11) 99999-9999</li>
+                        <li><i class="bi bi-envelope text-info me-2"></i> contato@hdgrebaixados.com.br</li>
                     </ul>
                 </div>
 
+                <!-- Coluna 4: Acesso Rápido -->
                 <div class="col-lg-3 col-md-12">
-                    <h6 class="text-white fw-bold mb-3 font-heading">Acesso Rápido</h6>
+                    <h6 class="text-white fw-bold mb-3 font-heading text-uppercase">Acesso Rápido</h6>
                     <div class="d-flex flex-column gap-2">
-                        <a href="/Admin" class="btn btn-sm btn-outline-dark-custom text-start">
-                            <i class="bi bi-lock-fill text-warning me-1"></i> Acesso Administrativo
+                        <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Quero cotar um kit de suspensão para o meu carro.")" target="_blank" class="btn btn-sm btn-whatsapp text-start">
+                            <i class="bi bi-chat-dots-fill me-1"></i> Falar com Preparador
                         </a>
-                        <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-sm btn-whatsapp text-start">
-                            <i class="bi bi-chat-dots-fill me-1"></i> Suporte Técnico no WhatsApp
+                        <a href="/Admin" class="btn btn-sm btn-outline-dark-custom text-start">
+                            <i class="bi bi-shield-lock-fill text-warning me-1"></i> Área do Administrador
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="pt-3 border-top border-secondary border-opacity-25 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-secondary">
+            <!-- Faixa Inferior de Direitos -->
+            <div class="pt-3 border-top border-secondary border-opacity-10 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-secondary">
                 <div>
                     &copy; 2026 HDG Rebaixados. Todos os direitos reservados.
                 </div>
-                <div>
-                    Desenvolvido com tecnologia .NET 10 & Clean Architecture.
+                <div class="text-muted">
+                    Cultura Stance & Street Custom • Alta Performance
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle JS -->
+    <!-- Bootstrap Bundle JS & Custom Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>
+</html>

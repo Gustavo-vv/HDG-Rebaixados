@@ -1,18 +1,20 @@
-﻿@{
-    ViewData["Title"] = "Acesso Negado";
+@{
+    ViewData["Title"] = "Acesso Restrito - HDG Rebaixados";
 }
 
 <div class="container py-5 text-center">
-    <div class="glass-panel p-5 max-w-600 mx-auto">
-        <i class="bi bi-shield-x display-1 text-danger mb-3 d-block"></i>
-        <h2 class="text-white fw-bold font-heading">Acesso Restrito</h2>
-        <p class="text-secondary mb-4">Vocêê não tem permissão para acessar esta área administrativa. É necessário possuir a credencial de Administrador.</p>
-        <div class="d-flex justify-content-center gap-3">
+    <div class="glass-panel p-5 max-w-600 mx-auto border border-danger border-opacity-50 shadow-lg">
+        <div class="d-inline-flex p-3 rounded-circle mb-3" style="background: rgba(220, 53, 69, 0.1); border: 1px solid rgba(220, 53, 69, 0.4);">
+            <i class="bi bi-shield-lock-fill display-3 text-danger"></i>
+        </div>
+        <h2 class="text-white fw-bold font-heading text-uppercase">Acesso Restrito à Garagem</h2>
+        <p class="text-secondary mb-4">Esta área é exclusiva para administradores e preparadores autorizados da HDG Rebaixados. Faça login com uma conta com privilégios de gestão.</p>
+        <div class="d-flex justify-content-center flex-wrap gap-3">
             <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark-custom">
-                <i class="bi bi-house-door"></i> Voltar ao Início
+                <i class="bi bi-house-door me-1"></i> Voltar ao Catálogo
             </a>
             <a asp-action="Login" class="btn btn-racing">
-                <i class="bi bi-box-arrow-in-right"></i> Trocar de Conta
+                <i class="bi bi-box-arrow-in-right me-1"></i> Trocar de Conta
             </a>
         </div>
     </div>

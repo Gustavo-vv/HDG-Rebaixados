@@ -1,55 +1,81 @@
-﻿@{
-    ViewData["Title"] = "Sobre a HDG Rebaixados";
+@{
+    ViewData["Title"] = "Sobre a Garagem HDG Rebaixados";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <span class="badge px-3 py-2 text-uppercase fw-bold" style="background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green);">Nossa História</span>
-        <h1 class="display-5 fw-bold text-white mt-2 font-heading">Paixão por Altura Baixa & Alta Performance</h1>
-        <p class="text-secondary max-w-600 mx-auto fs-5">A HDG Rebaixados nasceu da cultura eurolook, stance e street custom com a missão de entregar suspensões e rodas de qualidade suprema.</p>
-    </div>
+<div class="position-relative overflow-hidden py-5">
+    <div class="watermark-stance">GARAGE</div>
 
-    <div class="row g-4 align-items-center mb-5">
-        <div class="col-lg-6">
-            <div class="glass-panel p-4 p-md-5">
-                <h3 class="text-white fw-bold mb-3 font-heading">
-                    <i class="bi bi-gear-fill text-success me-2"></i> Nossa Oficina & Garagem
-                </h3>
-                <p class="text-secondary" style="line-height: 1.8;">
-                    Fundada por entusiastas do automobilismo e preparação automotiva, a <strong>HDG Rebaixados</strong> é hoje uma das marcas mais respeitadas no cenário nacional de customização de suspensão.
-                </p>
-                <p class="text-secondary" style="line-height: 1.8;">
-                    Trabalhamos lado a lado com os melhores fabricantes de cilindros de alumínio, blocos de válvulas rápidos de 8mm e 10mm, bolsas gomadas cônicas e rodas esportivas tala larga (BBS, Rotiform, Enkei styles).
-                </p>
-                <div class="d-flex gap-3 mt-4">
-                    <div class="border-start border-success border-3 ps-3">
-                        <h4 class="text-white fw-bold mb-0">+5.000</h4>
-                        <small class="text-secondary">Clientes Satisfeitos</small>
+    <div class="container position-relative z-1">
+        <!-- Hero Interno da Página Sobre -->
+        <div class="text-center mb-5 fade-in-up">
+            <span class="badge px-3 py-2 text-uppercase fw-bold" style="background: rgba(0, 230, 118, 0.12); color: var(--accent-green); border: 1px solid var(--accent-green);">
+                CULTURA & PROCEDÊNCIA DESDE O INÍCIO
+            </span>
+            <h1 class="display-4 fw-bold text-white mt-3 font-heading">
+                Paixão Por Carro Baixo. <br />
+                <span style="color: var(--accent-green);">Engenharia Por Trás do Fitment.</span>
+            </h1>
+            <p class="text-secondary max-w-600 mx-auto fs-5">
+                A HDG Rebaixados não vende apenas peças: nós vivemos a cultura stance, eurolook e street custom, garantindo que o seu carro rode no chão com alinhamento e segurança máxima.
+            </p>
+        </div>
+
+        <!-- Seção Garagem & Oficina -->
+        <div class="row g-4 align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="glass-panel p-4 p-md-5">
+                    <h3 class="text-white fw-bold mb-3 font-heading text-uppercase">
+                        <i class="bi bi-gear-wide-connected text-success me-2"></i> Nossa Garagem & Preparação
+                    </h3>
+                    <p class="text-secondary" style="line-height: 1.8;">
+                        Fundada por quem respira suspensão preparada e cultura de pista, a <strong>HDG Rebaixados</strong> é referência nacional na montagem de sistemas sob medida para quem busca estética agressiva sem sacrificar a integridade do conjunto mecânico.
+                    </p>
+                    <p class="text-secondary" style="line-height: 1.8;">
+                        Trabalhamos exclusivamente com componentes homologados: cilindros de alumínio sem solda, blocos de válvulas de alta vazão (8mm e 10mm), bolsas gomadas cônicas reforçadas, amortecedores com carga especial e rodas de tala larga com furação precisa.
+                    </p>
+
+                    <!-- Contadores da Página Sobre -->
+                    <div class="d-flex gap-4 mt-4 pt-3 border-top border-secondary border-opacity-25">
+                        <div class="border-start border-success border-3 ps-3">
+                            <h4 class="text-white fw-bold mb-0 tabular-nums" data-counter-target="5000" data-counter-prefix="+">+5.000</h4>
+                            <small class="text-secondary text-uppercase fw-bold" style="font-size: 0.75rem;">Setups Entregues</small>
+                        </div>
+                        <div class="border-start border-warning border-3 ps-3">
+                            <h4 class="text-white fw-bold mb-0 tabular-nums" data-counter-target="100" data-counter-suffix="%">100%</h4>
+                            <small class="text-secondary text-uppercase fw-bold" style="font-size: 0.75rem;">Peças com Procedência</small>
+                        </div>
                     </div>
-                    <div class="border-start border-warning border-3 ps-3">
-                        <h4 class="text-white fw-bold mb-0">100%</h4>
-                        <small class="text-secondary">Peças com Procedência</small>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-visual-card">
+                    <img src="~/img/placeholder-peca.png" 
+                         alt="Garagem HDG Rebaixados" 
+                         class="hero-visual-img" 
+                         style="height: 420px;" 
+                         loading="lazy" />
+                    <div class="hero-badge-tag">
+                        <span class="text-white small fw-bold"><i class="bi bi-tools text-success me-1"></i> BANCADA DE TESTES & AJUSTE DE FITMENT</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="rounded-4 overflow-hidden shadow-lg border border-secondary border-opacity-25">
-                <img src="~/img/placeholder-peca.png" 
-                     alt="Oficina HDG Rebaixados" class="img-fluid w-100" style="max-height: 420px; object-fit: cover;" />
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Banner -->
-    <div class="glass-panel p-5 text-center position-relative overflow-hidden">
-        <div class="position-relative">
-            <h2 class="text-white fw-bold mb-3 font-heading">Tem Dúvidas Sobre Qual Suspensão Serve no Seu Carro?</h2>
-            <p class="text-secondary max-w-600 mx-auto mb-4">Envie o ano, modelo e aro das rodas do seu carro diretamente no WhatsApp para nossos preparadores indicarem o setup perfeito.</p>
+        <!-- Banner de Contato Direto -->
+        <div class="cta-banner-stance text-center">
+            <span class="badge mb-3 px-3 py-2 text-uppercase fw-bold" style="background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green);">
+                FALE COM QUEM ENTENDE DO ASSUNTO
+            </span>
+            <h2 class="display-6 fw-bold text-white mb-3 font-heading">
+                Dúvidas Sobre Qual Suspensão Serve no Seu Carro?
+            </h2>
+            <p class="text-secondary max-w-600 mx-auto mb-4 fs-5">
+                Envie o ano, modelo e tamanho do aro das rodas diretamente para nossos preparadores no WhatsApp. A gente calcula a altura exata para o seu projeto.
+            </p>
             <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Gostaria de consultar compatibilidade de peças para o meu carro com a equipe da HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp btn-lg">
-                <i class="bi bi-whatsapp me-2"></i> Iniciar Atendimento via WhatsApp
+                <i class="bi bi-whatsapp me-2 fs-5"></i> Falar com o Preparador no WhatsApp
             </a>
         </div>
     </div>
-</div>
+</div>

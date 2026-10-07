@@ -1,6 +1,6 @@
-﻿@model IEnumerable<HDG.Application.DTOs.PecaDto>
+@model IEnumerable<HDG.Application.DTOs.PecaDto>
 @{
-    ViewData["Title"] = "Catálogo de Peças Preparadas & Suspensões";
+    ViewData["Title"] = "O Seu Carro no Chão. Do Jeito Certo.";
     var busca = ViewBag.Busca as string;
     var categoriaAtual = ViewBag.CategoriaSelecionada as HDG.Domain.Enums.CategoriaPeca?;
     var whatsAppNumero = ViewBag.WhatsAppNumero as string ?? "5511999999999";
@@ -18,61 +18,207 @@
     };
 }
 
-<!-- Hero Section -->
-<section class="hero-wrapper">
-    <div class="container position-relative">
-        <div class="row align-items-center">
+<!-- SEÇÃO 1: HERO EM TELA CHEIA (DARK GARAGE & STANCE) -->
+<section class="hero-wrapper position-relative">
+    <div class="watermark-stance">STANCE</div>
+    <div class="container position-relative z-1">
+        <div class="row align-items-center g-5">
             <div class="col-lg-7">
-                <div class="hero-badge">
-                    <i class="bi bi-fire"></i> Loja Oficial HDG Rebaixados 2026
+                <div class="hero-seal fade-in-up">
+                    <i class="bi bi-patch-check-fill"></i> Loja Oficial HDG Rebaixados 2026
                 </div>
-                <h1 class="hero-title">
-                    O Seu Carro no Chão com Performance & Estilo.
+
+                <h1 class="hero-title fade-in-up">
+                    Seu carro no chão. <br />
+                    <span class="highlight-green">Do jeito certo.</span>
                 </h1>
-                <p class="hero-subtitle">
-                    Kits completos de suspensão a ar, de rosca e fixa, além de rodas tala larga exclusivas e freios esportivos com envio expresso para todo o Brasil.
+
+                <!-- Marcador de Régua/Altura Automotiva -->
+                <div class="height-meter fade-in-up">
+                    <div class="height-meter-ticks">
+                        <div class="height-meter-tick"></div>
+                        <div class="height-meter-tick"></div>
+                        <div class="height-meter-tick"></div>
+                        <div class="height-meter-tick"></div>
+                        <div class="height-meter-tick"></div>
+                    </div>
+                    <span class="small font-display text-white" style="letter-spacing: 0.1em;">FITMENT PRECISO • AR • ROSCA • FIXA</span>
+                </div>
+
+                <p class="hero-subtitle fade-in-up">
+                    Kits completos de suspensão especial, rodas tala larga exclusivas e freios de alta performance. Projetos sob medida com alinhamento perfeito e envio expresso para todo o Brasil.
                 </p>
-                <div class="d-flex flex-wrap gap-3">
+
+                <div class="d-flex flex-wrap gap-3 fade-in-up">
                     <a href="#catalogo" class="btn btn-racing btn-lg">
-                        <i class="bi bi-grid-fill me-1"></i> Explorar Catálogo
+                        <i class="bi bi-grid-3x3-gap-fill"></i> Explorar o Catálogo
                     </a>
-                    <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Quero montar um projeto especial para meu carro com a HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp btn-lg">
-                        <i class="bi bi-whatsapp me-1"></i> Falar com Especialista
+                    <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Gostaria de falar com um preparador da HDG Rebaixados para montar meu projeto.")" target="_blank" class="btn btn-whatsapp btn-lg">
+                        <i class="bi bi-whatsapp"></i> Falar com um Preparador
                     </a>
                 </div>
 
-                <div class="hero-stats">
+                <!-- Faixa de Estatísticas Sobreposta com Contadores Animados -->
+                <div class="hero-stats-band fade-in-up">
                     <div class="hero-stat-item">
-                        <h4>+1.500</h4>
+                        <h4 class="tabular-nums" data-counter-target="1500" data-counter-prefix="+">+1.500</h4>
                         <p>Projetos Entregues</p>
                     </div>
                     <div class="hero-stat-item">
-                        <h4>100%</h4>
-                        <p>Garantia e NF</p>
+                        <h4 class="tabular-nums" data-counter-target="100" data-counter-suffix="%">100%</h4>
+                        <p>Garantia e Nota Fiscal</p>
                     </div>
                     <div class="hero-stat-item">
-                        <h4>5.0 ★</h4>
-                        <p>Avaliação Média</p>
+                        <h4 class="tabular-nums">5.0 ★</h4>
+                        <p>Avaliação Média Real</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 d-none d-lg-block text-center position-relative">
-                <img src="~/img/placeholder-peca.png" 
-                     alt="HDG Rebaixados" 
-                     class="img-fluid rounded-4 shadow-lg border border-secondary border-opacity-25" 
-                     style="max-height: 380px; width: 100%; object-fit: cover;" />
+
+            <!-- Visual Protagonista com Moldura Estilizada -->
+            <div class="col-lg-5 d-none d-lg-block fade-in-up">
+                <div class="hero-visual-card">
+                    <img src="~/img/placeholder-peca.png" 
+                         alt="Projeto HDG Rebaixados" 
+                         class="hero-visual-img" 
+                         loading="lazy" />
+                    <div class="hero-badge-tag">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge" style="background: var(--accent-green); color: #000; font-weight: 800;">EUROLOOK & STANCE</span>
+                            <span class="text-white small fw-bold">GARAGEM SP</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Catalog Section -->
+<!-- SEÇÃO 2: FAIXA DE DIFERENCIAIS (4 PILARES) -->
+<section class="differentials-band">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-sm-6">
+                <div class="diff-card">
+                    <div class="diff-icon-wrap">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div>
+                        <div class="diff-title">Peças Garantidas</div>
+                        <p class="diff-desc">Componentes com procedência e nota fiscal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="diff-card">
+                    <div class="diff-icon-wrap">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        <div class="diff-title">Envio Brasil</div>
+                        <p class="diff-desc">Logística ágil e embalagem blindada.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="diff-card">
+                    <div class="diff-icon-wrap">
+                        <i class="bi bi-whatsapp"></i>
+                    </div>
+                    <div>
+                        <div class="diff-title">Atendimento no Zap</div>
+                        <p class="diff-desc">Tire dúvidas técnicas direto com quem monta.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="diff-card">
+                    <div class="diff-icon-wrap">
+                        <i class="bi bi-sliders"></i>
+                    </div>
+                    <div>
+                        <div class="diff-title">Projeto sob Medida</div>
+                        <p class="diff-desc">Setup calculado para o aro e curso do seu carro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SEÇÃO 3: CATEGORIAS EM DESTAQUE -->
+<section class="py-5 carbon-subtle">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
+            <div>
+                <span class="text-uppercase fw-bold small" style="color: var(--accent-green); letter-spacing: 0.1em;">SELEÇÃO POR CATEGORIA</span>
+                <h2 class="display-6 fw-bold text-white mb-0 font-heading">Encontre as Peças do Seu Setup</h2>
+            </div>
+            <p class="text-secondary small mb-0 mt-2 mt-md-0">Clique na categoria para filtrar instantaneamente o catálogo.</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-3 col-md-6 col-6">
+                <a asp-action="Index" asp-route-categoria="1" class="category-card">
+                    <div class="category-card-icon">
+                        <i class="bi bi-sliders"></i>
+                    </div>
+                    <div>
+                        <h4 class="category-card-title">Suspensão</h4>
+                        <p class="category-card-sub">Ar, Rosca e Fixa</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-6">
+                <a asp-action="Index" asp-route-categoria="2" class="category-card">
+                    <div class="category-card-icon">
+                        <i class="bi bi-vinyl"></i>
+                    </div>
+                    <div>
+                        <h4 class="category-card-title">Rodas</h4>
+                        <p class="category-card-sub">Talas Largas & Eurolook</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-6">
+                <a asp-action="Index" asp-route-categoria="3" class="category-card">
+                    <div class="category-card-icon">
+                        <i class="bi bi-stop-circle"></i>
+                    </div>
+                    <div>
+                        <h4 class="category-card-title">Freios</h4>
+                        <p class="category-card-sub">Discos Ventilados & Pinças</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-6">
+                <a asp-action="Index" asp-route-categoria="5" class="category-card">
+                    <div class="category-card-icon">
+                        <i class="bi bi-wind"></i>
+                    </div>
+                    <div>
+                        <h4 class="category-card-title">Escapamento</h4>
+                        <p class="category-card-sub">Downpipe & Ponteiras</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SEÇÃO 4: CATÁLOGO (#catalogo) -->
 <section id="catalogo" class="py-5">
     <div class="container">
-        <!-- Search and Filters Bar -->
+        <!-- Barra de Busca e Filtros Pills -->
         <div class="glass-panel p-4 mb-5">
             <div class="row g-3 align-items-center">
-                <div class="col-lg-6">
+                <div class="col-lg-7">
                     <form method="get" asp-action="Index" class="d-flex gap-2">
                         @if (categoriaAtual.HasValue)
                         {
@@ -82,7 +228,7 @@
                             <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">
                                 <i class="bi bi-search"></i>
                             </span>
-                            <input type="text" name="busca" value="@busca" class="form-control form-control-custom" placeholder="Buscar por suspensão, aro de roda, pinça, downpipe..." />
+                            <input type="text" name="busca" value="@busca" class="form-control form-control-custom" placeholder="Buscar por suspensão a ar, bloco 8mm, aro 17 tala 8.5..." />
                         </div>
                         <button type="submit" class="btn btn-racing">Buscar</button>
                         @if (!string.IsNullOrEmpty(busca) || categoriaAtual.HasValue)
@@ -94,17 +240,17 @@
                     </form>
                 </div>
 
-                <div class="col-lg-6 text-lg-end text-secondary small">
+                <div class="col-lg-5 text-lg-end text-secondary small">
                     <span class="badge bg-dark border border-secondary text-white px-3 py-2">
-                        <i class="bi bi-box-seam me-1 text-success"></i> @Model.Count() produto(s) encontrado(s)
+                        <i class="bi bi-box-seam me-1 text-success"></i> @Model.Count() peça(s) no radar
                     </span>
                 </div>
             </div>
 
-            <!-- Category Pills com Scroll oculto e nomes acentuados -->
-            <div class="filter-pills-container mt-3">
+            <!-- Category Pills -->
+            <div class="filter-pills-container mt-4">
                 <a asp-action="Index" asp-route-busca="@busca" class="filter-pill @(!categoriaAtual.HasValue ? "active" : "")">
-                    <i class="bi bi-lightning-charge-fill"></i> Todos os Produtos
+                    <i class="bi bi-lightning-charge-fill"></i> Todas as Peças
                 </a>
                 <a asp-action="Index" asp-route-categoria="1" asp-route-busca="@busca" class="filter-pill @(categoriaAtual == HDG.Domain.Enums.CategoriaPeca.Suspensao ? "active" : "")">
                     <i class="bi bi-sliders"></i> Suspensão
@@ -134,10 +280,12 @@
         @if (!Model.Any())
         {
             <div class="glass-panel text-center py-5">
-                <i class="bi bi-emoji-frown display-3 text-secondary mb-3 d-block"></i>
-                <h4 class="text-white">Nenhuma peça encontrada</h4>
-                <p class="text-secondary">Tente alterar os termos da busca ou selecione outra categoria.</p>
-                <a asp-action="Index" class="btn btn-outline-dark-custom mt-2">Ver Todas as Peças</a>
+                <i class="bi bi-tools display-3 text-secondary mb-3 d-block"></i>
+                <h4 class="text-white fw-bold font-heading">Nenhuma peça encontrada</h4>
+                <p class="text-secondary max-w-600 mx-auto">Não localizamos itens com os critérios filtrados. Tente alterar os termos da busca ou limpe os filtros para ver todo o catálogo.</p>
+                <a asp-action="Index" class="btn btn-outline-dark-custom mt-2">
+                    <i class="bi bi-arrow-repeat me-1"></i> Ver Todas as Peças
+                </a>
             </div>
         }
         else
@@ -160,7 +308,7 @@
                                      loading="lazy" 
                                      onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
                                 <span class="peca-badge-cat">@ObterNomeAmigavelCategoria(peca.Categoria)</span>
-                                <span class="peca-badge-status bg-success bg-opacity-75 text-white">Disponível</span>
+                                <span class="peca-badge-status">Disponível</span>
                             </div>
 
                             <div class="peca-card-body">
@@ -185,14 +333,14 @@
                                 <p class="peca-card-desc">@peca.Descricao</p>
 
                                 <div class="peca-card-footer">
-                                    <div class="peca-price">
+                                    <div class="peca-price tabular-nums">
                                         <small>R$</small> @peca.Preco.ToString("N2")
                                     </div>
                                     <div class="d-flex gap-2">
                                         <a asp-action="Detalhes" asp-route-id="@peca.Id" class="btn btn-sm btn-outline-dark-custom" title="Ver Detalhes">
                                             <i class="bi bi-eye"></i> Detalhes
                                         </a>
-                                        <a href="@urlZap" target="_blank" class="btn btn-sm btn-whatsapp" title="Negociar no WhatsApp">
+                                        <a href="@urlZap" target="_blank" class="btn btn-sm btn-whatsapp" title="Chamar no WhatsApp">
                                             <i class="bi bi-whatsapp"></i> Zap
                                         </a>
                                     </div>
@@ -205,3 +353,65 @@
         }
     </div>
 </section>
+
+<!-- SEÇÃO 5: COMO FUNCIONA O SEU PROJETO (3 PASSOS) -->
+<section class="steps-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="text-uppercase fw-bold small" style="color: var(--accent-green); letter-spacing: 0.1em;">PASSO A PASSO</span>
+            <h2 class="display-6 fw-bold text-white mb-2 font-heading">Como Funciona o Seu Projeto</h2>
+            <p class="text-secondary max-w-600 mx-auto">Montar o carro no chão com segurança e fitment milimétrico é simples com a consultoria dos nossos preparadores.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <h3 class="step-title">Mande Seu Carro</h3>
+                    <p class="step-desc">Informe o modelo, ano, tamanho do aro e o estilo de altura que você busca (stance, street ou pista).</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <h3 class="step-title">Receba a Indicação</h3>
+                    <p class="step-desc">Nossa equipe calcula as medidas exatas de amortecedor, bolsas, roscas ou tala para não pegar na lata.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <h3 class="step-title">Instale e Ande Baixo</h3>
+                    <p class="step-desc">Receba o kit completo na sua porta com nota fiscal, garantia e suporte técnico durante toda a montagem.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SEÇÃO 6: CTA FINAL COM WHATSAPP -->
+<section class="py-5 position-relative">
+    <div class="container">
+        <div class="cta-banner-stance text-center">
+            <span class="badge mb-3 px-3 py-2 text-uppercase fw-bold" style="background: rgba(0, 230, 118, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green);">
+                CONSULTORIA DIRETO NA GARAGEM
+            </span>
+            <h2 class="display-5 fw-bold text-white mb-3 font-heading">
+                Pronto para Andar Baixo do Jeito Certo?
+            </h2>
+            <p class="text-secondary fs-5 mb-4 max-w-600 mx-auto">
+                Mande o ano, modelo e aro do seu carro. A gente indica o setup certo para você ter visual impactante sem dor de cabeça.
+            </p>
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Quero enviar os dados do meu carro para receber a indicação do setup certo na HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp btn-lg">
+                    <i class="bi bi-whatsapp fs-5"></i> Chamar no Zap Agora
+                </a>
+                <a href="#catalogo" class="btn btn-outline-dark-custom btn-lg">
+                    <i class="bi bi-grid-fill"></i> Explorar o Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
