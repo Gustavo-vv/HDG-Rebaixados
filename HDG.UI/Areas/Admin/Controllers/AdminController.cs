@@ -16,6 +16,7 @@ public class AdminController : Controller
     private readonly IAvaliacaoService _avaliacaoService;
     private readonly ICloudinaryService _cloudinaryService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IUsuarioAdminService _usuarioAdminService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(
@@ -23,12 +24,14 @@ public class AdminController : Controller
         IAvaliacaoService avaliacaoService,
         ICloudinaryService cloudinaryService,
         UserManager<ApplicationUser> userManager,
+        IUsuarioAdminService usuarioAdminService,
         ILogger<AdminController> logger)
     {
         _pecaService = pecaService;
         _avaliacaoService = avaliacaoService;
         _cloudinaryService = cloudinaryService;
         _userManager = userManager;
+        _usuarioAdminService = usuarioAdminService;
         _logger = logger;
     }
 
@@ -56,7 +59,7 @@ public class AdminController : Controller
     }
 
     // ==========================================
-    // GESTÃƒO DE PEÃ‡AS
+    // GESTÃO DE PEÇAS
     // ==========================================
     [HttpGet]
     public async Task<IActionResult> Pecas()
@@ -253,7 +256,7 @@ public class AdminController : Controller
     }
 
     // ==========================================
-    // MODERAÃ‡ÃƒO DE AVALIAÃ‡Ã•ES
+    // MODERAÇÃO DE AVALIAÇÕES
     // ==========================================
     [HttpGet]
     public async Task<IActionResult> Avaliacoes()
@@ -297,12 +300,120 @@ public class AdminController : Controller
     }
 
     // ==========================================
-    // USUÃRIOS
+    // GESTÃO DE USUÁRIOS
     // ==========================================
     [HttpGet]
-    public async Task<IActionResult> Usuarios()
+    public async Task<IActionResult> Usuarios([FromQuery] FiltroUsuariosDto filtro)
     {
-        var usuarios = await _userManager.Users.OrderByDescending(u => u.DataCadastro).ToListAsync();
+        filtro ??= new FiltroUsuariosDto();
+        var usuarios = await _usuarioAdminService.ObterUsuariosAsync(filtro);
+        ViewBag.Filtro = filtro;
+        ViewBag.AdminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
         return View(usuarios);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UsuarioEditar(EditarUsuarioDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var erros = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            TempData["MensagemErro"] = string.IsNullOrWhiteSpace(erros) ? "Dados inválidos para edição de usuário." : erros;
+            return RedirectToAction(nameof(Usuarios));
+        }
+
+        var adminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
+        var resultado = await _usuarioAdminService.EditarDadosAsync(dto, adminLogadoId);
+
+        if (resultado.Sucesso)
+        {
+            TempData["MensagemSucesso"] = "Dados do usuário atualizados com sucesso!";
+        }
+        else
+        {
+            TempData["MensagemErro"] = string.Join(" ", resultado.Erros);
+        }
+
+        return RedirectToAction(nameof(Usuarios));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UsuarioAlternarStatus(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            TempData["MensagemErro"] = "Identificador de usuário não informado.";
+            return RedirectToAction(nameof(Usuarios));
+        }
+
+        var adminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
+        var resultado = await _usuarioAdminService.AlternarStatusAsync(id, adminLogadoId);
+
+        if (resultado.Sucesso)
+        {
+            TempData["MensagemSucesso"] = resultado.NovoStatus
+                ? "Usuário reativado com sucesso!"
+                : "Usuário desativado com sucesso. As sessões foram encerradas.";
+        }
+        else
+        {
+            TempData["MensagemErro"] = string.Join(" ", resultado.Erros);
+        }
+
+        return RedirectToAction(nameof(Usuarios));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UsuarioAlterarSenha(AlterarSenhaAdminDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var erros = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            TempData["MensagemErro"] = string.IsNullOrWhiteSpace(erros) ? "Dados inválidos para redefinição de senha." : erros;
+            return RedirectToAction(nameof(Usuarios));
+        }
+
+        var adminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
+        var resultado = await _usuarioAdminService.AlterarSenhaAsync(dto, adminLogadoId);
+
+        if (resultado.Sucesso)
+        {
+            TempData["MensagemSucesso"] = "Senha redefinida com sucesso! Sessões anteriores foram invalidadas.";
+        }
+        else
+        {
+            TempData["MensagemErro"] = string.Join(" ", resultado.Erros);
+        }
+
+        return RedirectToAction(nameof(Usuarios));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UsuarioAlterarPerfil(AlterarPerfilDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            var erros = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            TempData["MensagemErro"] = string.IsNullOrWhiteSpace(erros) ? "Dados inválidos para alteração de perfil." : erros;
+            return RedirectToAction(nameof(Usuarios));
+        }
+
+        var adminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
+        var resultado = await _usuarioAdminService.AlterarPerfilAsync(dto, adminLogadoId);
+
+        if (resultado.Sucesso)
+        {
+            TempData["MensagemSucesso"] = $"Perfil do usuário atualizado para {dto.NovaRole}!";
+        }
+        else
+        {
+            TempData["MensagemErro"] = string.Join(" ", resultado.Erros);
+        }
+
+        return RedirectToAction(nameof(Usuarios));
     }
 }

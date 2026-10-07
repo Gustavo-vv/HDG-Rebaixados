@@ -6,11 +6,12 @@
     <title>@ViewData["Title"] - Gestão Garagem | HDG Rebaixados</title>
 
     <!-- Favicon & Icons -->
-    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="16x16" href="~/img/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="~/img/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="~/img/favicon-192x192.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="~/img/apple-touch-icon.png" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/img/hdg-favicon-16x16.png" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/img/hdg-favicon-32x32.png" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="192x192" href="~/img/hdg-favicon-192x192.png" asp-append-version="true" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/img/hdg-apple-touch-icon.png" asp-append-version="true" />
+    <meta name="theme-color" content="#060809" />
 
     <!-- Google Fonts: Bebas Neue, Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +31,13 @@
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
                 <a asp-area="Admin" asp-controller="Admin" asp-action="Index" class="hdg-logo-link">
-                    <img src="~/img/logo.png" alt="HDG Rebaixados" class="hdg-logo-img" />
+                    <img src="~/img/hdg-logo-header.png" 
+                         alt="HDG Rebaixados" 
+                         style="height: 56px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 10px var(--accent-green-glow-subtle));" 
+                         width="56"
+                         height="56"
+                         loading="eager"
+                         asp-append-version="true" />
                 </a>
                 <span class="badge" style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: #041009; font-weight: 800; letter-spacing: 0.08em; font-size: 0.75rem;">GARAGEM ADMIN</span>
             </div>

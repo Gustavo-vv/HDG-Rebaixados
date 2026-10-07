@@ -20,10 +20,25 @@
 
 <!-- SEÇÃO 1: HERO EM TELA CHEIA (DARK GARAGE & STANCE) -->
 <section class="hero-wrapper position-relative">
-    <div class="watermark-stance">STANCE</div>
+    <!-- Marca d'água discreta de fundo atrás da logo -->
+    <div class="watermark-stance" aria-hidden="true">STANCE</div>
     <div class="container position-relative z-1">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-7">
+        <div class="row align-items-center g-4 g-lg-5">
+            <!-- Coluna de Texto (Desktop: ~58% / Mobile: 100%) -->
+            <div class="col-lg-7 col-xl-7 hero-text-col">
+                <!-- Mobile Logo (Aparece apenas abaixo de 992px, centralizada acima do selo/título) -->
+                <div class="hero-logo-mobile-wrapper d-lg-none text-center mb-4 fade-in-up">
+                    <div class="hero-logo-mobile-glow"></div>
+                    <img src="~/img/hdg-logo.png" 
+                         alt="HDG Rebaixados" 
+                         class="hero-logo-mobile-img" 
+                         width="200" 
+                         height="200" 
+                         loading="eager" 
+                         fetchpriority="high"
+                         asp-append-version="true" />
+                </div>
+
                 <div class="hero-seal fade-in-up">
                     <i class="bi bi-patch-check-fill"></i> Loja Oficial HDG Rebaixados 2026
                 </div>
@@ -33,27 +48,15 @@
                     <span class="highlight-green">Do jeito certo.</span>
                 </h1>
 
-                <!-- Marcador de Régua/Altura Automotiva -->
-                <div class="height-meter fade-in-up">
-                    <div class="height-meter-ticks">
-                        <div class="height-meter-tick"></div>
-                        <div class="height-meter-tick"></div>
-                        <div class="height-meter-tick"></div>
-                        <div class="height-meter-tick"></div>
-                        <div class="height-meter-tick"></div>
-                    </div>
-                    <span class="small font-display text-white" style="letter-spacing: 0.1em;">FITMENT PRECISO • AR • ROSCA • FIXA</span>
-                </div>
-
                 <p class="hero-subtitle fade-in-up">
                     Kits completos de suspensão especial, rodas tala larga exclusivas e freios de alta performance. Projetos sob medida com alinhamento perfeito e envio expresso para todo o Brasil.
                 </p>
 
-                <div class="d-flex flex-wrap gap-3 fade-in-up">
+                <div class="d-flex flex-wrap gap-3 fade-in-up hero-actions">
                     <a href="#catalogo" class="btn btn-racing btn-lg">
                         <i class="bi bi-grid-3x3-gap-fill"></i> Explorar o Catálogo
                     </a>
-                    <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Gostaria de falar com um preparador da HDG Rebaixados para montar meu projeto.")" target="_blank" class="btn btn-whatsapp btn-lg">
+                    <a href="https://wa.me/@whatsAppNumero?text=@Uri.EscapeDataString("Olá! Gostaria de falar com um preparador da HDG Rebaixados para montar meu projeto.")" target="_blank" class="btn btn-outline-custom btn-lg">
                         <i class="bi bi-whatsapp"></i> Falar com um Preparador
                     </a>
                 </div>
@@ -75,18 +78,28 @@
                 </div>
             </div>
 
-            <!-- Visual Protagonista com Moldura Estilizada -->
-            <div class="col-lg-5 d-none d-lg-block fade-in-up">
-                <div class="hero-visual-card">
-                    <img src="~/img/placeholder-peca.png" 
-                         alt="Projeto HDG Rebaixados" 
-                         class="hero-visual-img" 
-                         loading="lazy" />
-                    <div class="hero-badge-tag">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge" style="background: var(--accent-green); color: #000; font-weight: 800;">EUROLOOK & STANCE</span>
-                            <span class="text-white small fw-bold">GARAGEM SP</span>
-                        </div>
+            <!-- Coluna da Logo (Desktop: ~42% / Oculto no Mobile pois já aparece acima) -->
+            <div class="col-lg-5 col-xl-5 d-none d-lg-flex justify-content-center align-items-center fade-in-up">
+                <div class="hero-logo-stage">
+                    <!-- Brilho Radial Desfocado da Marca -->
+                    <div class="hero-logo-glow"></div>
+
+                    <!-- Anel Concêntrico Tracejado (efeito disco de freio/roda com rotação ultra lenta) -->
+                    <div class="hero-logo-rotor-ring" aria-hidden="true"></div>
+
+                    <!-- Emblema Oficial com Flutuação e Sombra de Profundidade -->
+                    <img src="~/img/hdg-logo.png" 
+                         alt="Emblema HDG Rebaixados" 
+                         class="hero-emblem-main" 
+                         width="512" 
+                         height="512" 
+                         loading="eager" 
+                         fetchpriority="high"
+                         asp-append-version="true" />
+
+                    <!-- Legenda Discreta Centralizada Embaixo da Logo -->
+                    <div class="hero-logo-caption">
+                        Est. 2026 · Garagem SP · Stance &amp; Motor
                     </div>
                 </div>
             </div>
@@ -304,11 +317,25 @@
                         <div class="col-xl-4 col-md-6">
                             <div class="peca-card">
                                 <div class="peca-card-img-wrap">
-                                    <img src="@imgUrl" 
-                                         alt="@peca.Nome" 
-                                         class="peca-card-img" 
-                                         loading="lazy" 
-                                         onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                                    @if (!string.IsNullOrEmpty(peca.ImagemPrincipalUrl))
+                                    {
+                                        <img src="@peca.ImagemPrincipalUrl" 
+                                             alt="@peca.Nome" 
+                                             class="peca-card-img" 
+                                             loading="lazy" 
+                                             onerror="this.style.display='none'; if(this.nextElementSibling){this.nextElementSibling.style.display='flex';}" />
+                                        <div class="product-placeholder-wrap" style="display: none;">
+                                            <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
+                                            <span class="product-placeholder-text">Foto em breve</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="product-placeholder-wrap">
+                                            <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
+                                            <span class="product-placeholder-text">Foto em breve</span>
+                                        </div>
+                                    }
                                     <span class="peca-badge-cat">@ObterNomeAmigavelCategoria(peca.Categoria)</span>
                                     <span class="peca-badge-status">Disponível</span>
                                 </div>
@@ -422,4 +449,4 @@
 @section Scripts {
     <script src="~/js/catalogo.js" asp-append-version="true"></script>
 }
-
+

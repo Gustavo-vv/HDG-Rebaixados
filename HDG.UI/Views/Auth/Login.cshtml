@@ -14,7 +14,7 @@
                         <div class="watermark-stance" style="top: 25%; font-size: 8rem;">HDG</div>
                         <div class="position-relative z-1">
                             <a asp-controller="Home" asp-action="Index" class="hdg-logo-link mb-4 d-inline-block">
-                                <img src="~/img/logo.png" alt="HDG Rebaixados" style="height: 58px; width: auto;" />
+                                <img src="~/img/hdg-logo-header.png" alt="HDG Rebaixados" style="height: 96px; width: auto; filter: drop-shadow(0 6px 18px var(--accent-green-glow));" loading="eager" asp-append-version="true" />
                             </a>
                             <div class="hero-seal mb-3">ACESSO EXCLUSIVO</div>
                             <h2 class="display-6 fw-bold text-white font-heading">
@@ -33,8 +33,13 @@
 
                     <!-- Coluna Formulário de Login -->
                     <div class="col-lg-6 p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <div class="d-lg-none text-center mb-4">
+                            <a asp-controller="Home" asp-action="Index" class="hdg-logo-link d-inline-block">
+                                <img src="~/img/hdg-logo-header.png" alt="HDG Rebaixados" style="height: 96px; width: auto; filter: drop-shadow(0 6px 18px var(--accent-green-glow));" loading="eager" asp-append-version="true" />
+                            </a>
+                        </div>
                         <div class="mb-4">
-                            <span class="badge mb-2 px-3 py-1 font-display" style="background: rgba(0, 230, 118, 0.1); color: var(--accent-green); border: 1px solid var(--accent-green); letter-spacing: 0.08em;">BEM-VINDO DE VOLTA</span>
+                            <span class="badge mb-2 px-3 py-1 font-display" style="background: var(--accent-green-glow-subtle); color: var(--accent-green); border: 1px solid var(--accent-green); letter-spacing: 0.08em;">BEM-VINDO DE VOLTA</span>
                             <h3 class="text-white fw-bold font-heading">Acesse Sua Conta</h3>
                             <p class="text-secondary small mb-0">Insira suas credenciais para entrar no painel HDG.</p>
                         </div>
@@ -51,7 +56,7 @@
                         }
 
                         <!-- Credenciais de Demonstração Rápidas -->
-                        <div class="p-3 rounded-3 mb-4 border border-secondary border-opacity-25" style="background: rgba(0, 230, 118, 0.04); border-color: rgba(0, 230, 118, 0.3) !important;">
+                        <div class="p-3 rounded-3 mb-4 border border-secondary border-opacity-25" style="background: var(--accent-green-glow-subtle); border-color: var(--border-accent) !important;">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <strong class="small" style="color: var(--accent-green);"><i class="bi bi-shield-check"></i> Credenciais Demo:</strong>
                                 <button type="button" class="btn btn-sm btn-racing py-0 px-2 fw-bold" onclick="preencherAdmin()" style="font-size: 0.75rem; height: 26px;">

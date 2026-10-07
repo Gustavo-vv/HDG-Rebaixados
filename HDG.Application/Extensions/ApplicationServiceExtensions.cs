@@ -20,6 +20,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IAvaliacaoService, AvaliacaoService>();
         services.AddScoped<ICloudinaryService, CloudinaryService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUsuarioAdminService, UsuarioAdminService>();
 
         return services;
     }

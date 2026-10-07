@@ -34,13 +34,27 @@
         <!-- Galeria Interativa -->
         <div class="col-lg-6">
             <div class="glass-panel p-3">
-                <div class="rounded-3 overflow-hidden bg-black text-center mb-3 position-relative" style="height: 440px;">
-                    <img id="mainImage" 
-                         src="@(Model.Imagens.FirstOrDefault()?.Url ?? Url.Content("~/img/placeholder-peca.png"))" 
-                         alt="@Model.Nome" 
-                         class="img-fluid h-100 w-100" 
-                         style="object-fit: cover;" 
-                         onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                <div class="rounded-3 overflow-hidden bg-black text-center mb-3 position-relative" style="aspect-ratio: 4/3; min-height: 380px;">
+                    @if (Model.Imagens.Any())
+                    {
+                        <img id="mainImage" 
+                             src="@Model.Imagens.First().Url" 
+                             alt="@Model.Nome" 
+                             class="img-fluid h-100 w-100" 
+                             style="object-fit: cover;" 
+                             onerror="this.style.display='none'; document.getElementById('detalhePlaceholder').style.display='flex';" />
+                        <div id="detalhePlaceholder" class="product-placeholder-wrap h-100 w-100" style="display: none;">
+                            <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
+                            <span class="product-placeholder-text">Foto em breve</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="product-placeholder-wrap h-100 w-100">
+                            <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
+                            <span class="product-placeholder-text">Foto em breve</span>
+                        </div>
+                    }
                     <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 border border-secondary text-white small">
                         <i class="bi bi-camera me-1"></i> Imagem Oficial HDG
                     </span>
@@ -55,8 +69,8 @@
                                  style="width: 80px; height: 80px; flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease;"
                                  onmouseover="this.style.borderColor='var(--accent-green)'"
                                  onmouseout="this.style.borderColor='rgba(226, 232, 240, 0.2)'"
-                                 onclick="document.getElementById('mainImage').src = '@img.Url'">
-                                <img src="@img.Url" alt="Miniatura" class="w-100 h-100" style="object-fit: cover;" onerror="if (this.src.indexOf('placeholder-peca') === -1) { this.onerror=null; this.src='@Url.Content("~/img/placeholder-peca.png")'; }" />
+                                 onclick="document.getElementById('mainImage').src = '@img.Url'; document.getElementById('mainImage').style.display='block'; if(document.getElementById('detalhePlaceholder')) document.getElementById('detalhePlaceholder').style.display='none';">
+                                <img src="@img.Url" alt="Miniatura" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='@Url.Content("~/img/hdg-logo.png")'; this.style.opacity='0.3';" />
                             </div>
                         }
                     </div>
@@ -69,7 +83,7 @@
             <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
                 <span class="badge" style="background: linear-gradient(135deg, var(--accent-green), var(--accent-green-dark)); color: #000; font-weight: 800; text-transform: uppercase;">@ObterNomeAmigavelCategoria(Model.Categoria)</span>
                 <span class="badge bg-dark border border-secondary text-secondary font-display" style="letter-spacing: 0.05em;">CÓDIGO #@Model.Id.ToString("D4")</span>
-                <span class="badge" style="background: rgba(0, 230, 118, 0.15); border: 1px solid var(--accent-green); color: var(--accent-green); font-weight: 700;">PRONTA ENTREGA</span>
+                <span class="badge" style="background: var(--accent-green-glow-subtle); border: 1px solid var(--accent-green); color: var(--accent-green); font-weight: 700;">PRONTA ENTREGA</span>
             </div>
 
             <h1 class="display-6 fw-bold text-white mb-3 font-heading">@Model.Nome</h1>
