@@ -7,6 +7,8 @@ public interface IAvaliacaoService
     Task<IEnumerable<AvaliacaoDto>> ObterPorPecaAsync(int pecaId);
     Task<IEnumerable<AvaliacaoDto>> ObterTodasParaModeracaoAsync();
     Task<AvaliacaoDto> CriarAsync(CriarAvaliacaoDto dto);
+    Task<AvaliacaoDto> CriarParaUsuarioAsync(CriarAvaliacaoDto dto, string nomeCliente, string? userId);
     Task AprovarAsync(int id);
+    Task DesaprovarAsync(int id);
     Task ExcluirAsync(int id);
 }

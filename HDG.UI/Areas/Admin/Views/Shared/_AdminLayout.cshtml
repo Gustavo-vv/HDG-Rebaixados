@@ -114,8 +114,14 @@
                             <i class="bi bi-boxes"></i> Catálogo de Peças
                         </a>
                         <a asp-area="Admin" asp-controller="Admin" asp-action="Avaliacoes" 
-                           class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Avaliacoes" ? "active" : "")">
-                            <i class="bi bi-chat-square-quote-fill"></i> Moderação
+                           class="admin-nav-item d-flex justify-content-between align-items-center @(ViewContext.RouteData.Values["action"]?.ToString() == "Avaliacoes" ? "active" : "")">
+                            <span><i class="bi bi-chat-square-quote-fill me-2"></i> Moderação</span>
+                            @if ((ViewBag.AvaliacoesPendentesBadge ?? 0) > 0)
+                            {
+                                <span class="badge rounded-pill bg-warning text-dark font-display px-2 py-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                                    @ViewBag.AvaliacoesPendentesBadge
+                                </span>
+                            }
                         </a>
                         <a asp-area="Admin" asp-controller="Admin" asp-action="Usuarios" 
                            class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Usuarios" ? "active" : "")">
@@ -138,21 +144,33 @@
         <!-- Conteúdo Principal da Página Admin -->
         <main class="admin-main-content">
             <div class="admin-content-container">
-                <!-- Alertas e Mensagens -->
-                @if (TempData["MensagemSucesso"] != null)
-                {
-                    <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-25 border border-success text-white mb-4" role="alert">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i> @TempData["MensagemSucesso"]
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                    </div>
-                }
-                @if (TempData["MensagemErro"] != null)
-                {
-                    <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-25 border border-danger text-white mb-4" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> @TempData["MensagemErro"]
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                    </div>
-                }
+                <!-- Container de Toasts para Mensagens do Admin -->
+                <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+                    @if (TempData["MensagemSucesso"] != null)
+                    {
+                        <div class="toast align-items-center text-white bg-dark border border-success border-opacity-50 show shadow-lg" role="alert" aria-live="polite" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
+                            <div class="d-flex">
+                                <div class="toast-body d-flex align-items-center gap-2">
+                                    <i class="bi bi-check-circle-fill fs-5" style="color: var(--accent-green);"></i>
+                                    <div>@TempData["MensagemSucesso"]</div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+                    }
+                    @if (TempData["MensagemErro"] != null)
+                    {
+                        <div class="toast align-items-center text-white bg-danger border-0 show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
+                            <div class="d-flex">
+                                <div class="toast-body d-flex align-items-center gap-2">
+                                    <i class="bi bi-exclamation-octagon-fill fs-5 text-white"></i>
+                                    <div>@TempData["MensagemErro"]</div>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                            </div>
+                        </div>
+                    }
+                </div>
 
                 @RenderBody()
             </div>

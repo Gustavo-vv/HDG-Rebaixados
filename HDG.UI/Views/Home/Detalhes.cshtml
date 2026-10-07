@@ -1,4 +1,4 @@
-@model HDG.Application.DTOs.PecaDto
+﻿@model HDG.Application.DTOs.PecaDto
 @{
     ViewData["Title"] = $"{Model.Nome} - Detalhes do Setup";
     var avaliacoes = ViewBag.Avaliacoes as IEnumerable<HDG.Application.DTOs.AvaliacaoDto> ?? Enumerable.Empty<HDG.Application.DTOs.AvaliacaoDto>();
@@ -94,7 +94,7 @@
                     {
                         if (i <= Math.Round(Model.MediaAvaliacoes))
                         {
-                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
                         }
                         else
                         {
@@ -154,7 +154,7 @@
     </div>
 
     <!-- Avaliações e Formulário -->
-    <div class="row mt-5 pt-4">
+    <div class="row mt-5 pt-4" id="avaliacoes">
         <div class="col-lg-7">
             <h3 class="text-white fw-bold mb-4 font-heading text-uppercase">
                 <i class="bi bi-chat-quote-fill text-success me-2"></i> Avaliações de Quem Comprou (@avaliacoes.Count())
@@ -163,7 +163,7 @@
             @if (!avaliacoes.Any())
             {
                 <div class="glass-panel p-4 text-center text-secondary">
-                    <p class="mb-0">Esta peça ainda não possui avaliações aprovadas. Deixe seu relato abaixo após a instalação!</p>
+                    <p class="mb-0">Esta peça ainda não possui avaliações aprovadas. Deixe seu relato após a instalação!</p>
                 </div>
             }
             else
@@ -182,18 +182,19 @@
                                     {
                                         if (i <= av.Nota)
                                         {
-                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill text-warning"></i>
                                         }
                                         else
                                         {
                                             <i class="bi bi-star text-secondary"></i>
                                         }
                                     }
+                                    <span class="text-white ms-1 fw-bold">(@av.Nota)</span>
                                 </div>
                             </div>
                             @if (!string.IsNullOrWhiteSpace(av.Comentario))
                             {
-                                <p class="text-secondary mb-1 small">"@av.Comentario"</p>
+                                <p class="text-light mb-1 small" style="white-space: pre-wrap; word-break: break-word;">"@av.Comentario"</p>
                             }
                             <span class="text-muted small">@av.DataCriacao.ToString("dd/MM/yyyy")</span>
                         </div>
@@ -202,7 +203,7 @@
             }
         </div>
 
-        <!-- Enviar Nova Avaliação -->
+        <!-- Enviar Nova Avaliação / Card de Autenticação -->
         <div class="col-lg-5 mt-4 mt-lg-0">
             <div class="glass-panel p-4">
                 <h4 class="text-white fw-bold mb-2 font-heading text-uppercase">
@@ -210,35 +211,91 @@
                 </h4>
                 <p class="text-secondary small mb-3">Conte sua experiência com esta peça na HDG Rebaixados para fortalecer a comunidade dos carros baixos.</p>
 
-                <form asp-action="EnviarAvaliacao" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="PecaId" value="@Model.Id" />
-
-                    <div class="mb-3">
-                        <label class="form-label-custom">Sua Nota *</label>
-                        <select name="Nota" class="form-select form-select-custom" required>
-                            <option value="5" selected>⭐⭐⭐⭐⭐ - 5 Estrelas (Excelente)</option>
-                            <option value="4">⭐⭐⭐⭐ - 4 Estrelas (Muito Bom)</option>
-                            <option value="3">⭐⭐⭐ - 3 Estrelas (Bom)</option>
-                            <option value="2">⭐⭐ - 2 Estrelas (Regular)</option>
-                            <option value="1">⭐ - 1 Estrela (Insatisfeito)</option>
-                        </select>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    var nomeLogado = ViewBag.UsuarioNomeCompleto as string ?? User.Identity.Name ?? "Cliente";
+                    <div class="mb-3 p-2 px-3 rounded-2 border border-secondary border-opacity-25 bg-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-person-check-fill text-success fs-5"></i>
+                        <span class="small text-secondary">
+                            Avaliando como: <strong class="text-white">@nomeLogado</strong>
+                        </span>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label-custom">Seu Nome *</label>
-                        <input type="text" name="NomeCliente" class="form-control form-control-custom" placeholder="Ex: Felipe Ramos" required maxlength="100" />
-                    </div>
+                    <form asp-action="EnviarAvaliacao" method="post" id="formAvaliacaoPeca" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="PecaId" value="@Model.Id" />
 
-                    <div class="mb-3">
-                        <label class="form-label-custom">Seu Comentário</label>
-                        <textarea name="Comentario" rows="3" class="form-control form-control-custom" placeholder="Fale sobre o acabamento, altura, durabilidade ou instalação..." maxlength="1000"></textarea>
-                    </div>
+                        <!-- Seletor de Estrelas Interativo e Acessível -->
+                        <div class="mb-3">
+                            <label class="form-label-custom d-flex justify-content-between align-items-center">
+                                <span>Sua Nota *</span>
+                                <span id="labelNotaDescricao" class="small text-warning fw-bold font-display" style="letter-spacing: 0.05em;">5 Estrelas (Excelente)</span>
+                            </label>
 
-                    <button type="submit" class="btn btn-racing w-100 justify-content-center">
-                        <i class="bi bi-send-fill me-1"></i> Enviar Avaliação
-                    </button>
-                </form>
+                            <div class="star-rating-widget" id="starRatingWidget" role="radiogroup" aria-label="Avalie este produto de 1 a 5 estrelas">
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    var textLabel = i switch
+                                    {
+                                        5 => "5 Estrelas (Excelente)",
+                                        4 => "4 Estrelas (Muito Bom)",
+                                        3 => "3 Estrelas (Bom)",
+                                        2 => "2 Estrelas (Regular)",
+                                        1 => "1 Estrela (Insatisfeito)",
+                                        _ => $"{i} Estrelas"
+                                    };
+                                    <input type="radio" id="star-@i" name="Nota" value="@i" @(i == 5 ? "checked" : "") class="star-radio" data-desc="@textLabel" />
+                                    <label for="star-@i" class="star-label" title="@textLabel" aria-label="@textLabel">
+                                        <i class="bi bi-star-fill"></i>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Comentário -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label-custom mb-0">Seu Comentário (opcional)</label>
+                                <span id="comentarioContador" class="small text-secondary" style="font-size: 0.75rem;">0/1000</span>
+                            </div>
+                            <textarea name="Comentario" id="comentarioTexto" rows="3" class="form-control form-control-custom" placeholder="Fale sobre o acabamento, altura, durabilidade ou instalação..." maxlength="1000"></textarea>
+                        </div>
+
+                        <button type="submit" id="btnEnviarAvaliacao" class="btn btn-racing w-100 justify-content-center">
+                            <span class="btn-text d-flex align-items-center gap-1">
+                                <i class="bi bi-send-fill"></i> Enviar avaliação
+                            </span>
+                            <span class="btn-loading d-none align-items-center gap-2">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Enviando...
+                            </span>
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    var returnUrlAtual = $"{Url.Action("Detalhes", "Home", new { id = Model.Id })}#avaliacoes";
+                    <!-- Card Elegante "Entre para avaliar" -->
+                    <div class="p-4 rounded-3 border border-secondary border-opacity-25 text-center mt-3" style="background: rgba(12, 15, 18, 0.75);">
+                        <div class="mb-3">
+                            <span class="d-inline-flex align-items-center justify-content-center rounded-circle border border-warning border-opacity-25 p-3" style="background: rgba(255, 183, 3, 0.1);">
+                                <i class="bi bi-shield-lock-fill text-warning fs-3"></i>
+                            </span>
+                        </div>
+                        <h5 class="text-white fw-bold font-heading mb-2">Entre para avaliar</h5>
+                        <p class="text-secondary small mb-4">
+                            Para manter as avaliações confiáveis, apenas clientes cadastrados podem avaliar as peças do catálogo.
+                        </p>
+                        <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                            <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@returnUrlAtual" class="btn btn-racing px-4">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+                            </a>
+                            <a asp-controller="Auth" asp-action="Registro" asp-route-returnUrl="@returnUrlAtual" class="btn btn-outline-custom px-4">
+                                <i class="bi bi-person-plus me-1"></i> Criar conta
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>

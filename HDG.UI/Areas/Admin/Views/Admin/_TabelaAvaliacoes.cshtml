@@ -1,0 +1,126 @@
+@model IEnumerable<HDG.Application.DTOs.AvaliacaoDto>
+@{
+    var fuso = ViewData["Fuso"] as TimeZoneInfo ?? TimeZoneInfo.Utc;
+    var aba = ViewData["Aba"] as string ?? "pendentes";
+}
+
+<div class="glass-panel p-3 p-md-4">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-secondary">
+            <i class="bi bi-chat-square-heart display-4 mb-3 d-block text-secondary opacity-50"></i>
+            <h4 class="text-white">Nenhuma avaliação nesta categoria</h4>
+            <p class="mb-0">Não há avaliações cadastradas ou pendentes com este filtro.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table-dark-custom table-admin-responsive">
+                <thead>
+                    <tr>
+                        <th style="min-width: 140px;">Data (Brasília)</th>
+                        <th>Cliente</th>
+                        <th>Peça</th>
+                        <th>Nota</th>
+                        <th style="min-width: 250px;">Comentário Completo</th>
+                        <th>Status</th>
+                        <th class="text-end" style="min-width: 180px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var av in Model)
+                    {
+                        var dataBrasilia = TimeZoneInfo.ConvertTimeFromUtc(av.DataCriacao, fuso);
+                        <tr>
+                            <td data-label="Data" class="small text-secondary">
+                                @dataBrasilia.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td data-label="Cliente" class="text-white fw-bold">
+                                <i class="bi bi-person-fill text-secondary me-1"></i> @av.NomeCliente
+                            </td>
+                            <td data-label="Peça">
+                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@av.PecaId" target="_blank" class="text-decoration-none text-light fw-medium">
+                                    @av.PecaNome <i class="bi bi-box-arrow-up-right small text-secondary"></i>
+                                </a>
+                            </td>
+                            <td data-label="Nota">
+                                <div class="rating-stars small">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= av.Nota)
+                                        {
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-secondary"></i>
+                                        }
+                                    }
+                                    <span class="text-white ms-1 fw-bold">(@av.Nota)</span>
+                                </div>
+                            </td>
+                            <td data-label="Comentário" class="small text-secondary">
+                                @if (string.IsNullOrWhiteSpace(av.Comentario))
+                                {
+                                    <span class="fst-italic text-muted">Sem comentário em texto.</span>
+                                }
+                                else
+                                {
+                                    <div class="p-2 rounded border border-secondary border-opacity-10 text-light" style="background: rgba(255,255,255,0.02); line-height: 1.5; white-space: pre-wrap; word-break: break-word;">@av.Comentario</div>
+                                }
+                            </td>
+                            <td data-label="Status">
+                                @if (av.Aprovada)
+                                {
+                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50">
+                                        <i class="bi bi-check-circle-fill"></i> Publicada
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50">
+                                        <i class="bi bi-clock-history"></i> Pendente
+                                    </span>
+                                }
+                            </td>
+                            <td data-label="Ações" class="text-end">
+                                <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                                    @if (!av.Aprovada)
+                                    {
+                                        <form asp-action="AvaliacaoAprovar" asp-route-id="@av.Id" method="post" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-racing d-flex align-items-center gap-1" title="Aprovar Avaliação" aria-label="Aprovar avaliação de @av.NomeCliente">
+                                                <i class="bi bi-check-lg"></i> <span>Aprovar</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="AvaliacaoDesaprovar" asp-route-id="@av.Id" method="post" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-warning d-flex align-items-center gap-1" title="Despublicar Avaliação (voltar para Pendentes)" aria-label="Despublicar avaliação de @av.NomeCliente">
+                                                <i class="bi bi-arrow-counterclockwise"></i> <span>Despublicar</span>
+                                            </button>
+                                        </form>
+                                    }
+
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalRecusarAvaliacao" 
+                                            data-avaliacao-id="@av.Id" 
+                                            data-avaliacao-nome="@av.NomeCliente"
+                                            title="Recusar e Excluir Avaliação" 
+                                            aria-label="Recusar avaliação de @av.NomeCliente">
+                                        <i class="bi bi-trash"></i> <span>Recusar</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

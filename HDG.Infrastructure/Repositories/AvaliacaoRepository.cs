@@ -62,6 +62,29 @@ public class AvaliacaoRepository : IAvaliacaoRepository
         }
     }
 
+    public async Task DesaprovarAsync(int id)
+    {
+        var avaliacao = await _context.Avaliacoes.FindAsync(id);
+        if (avaliacao != null)
+        {
+            avaliacao.Aprovada = false;
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task<bool> ExisteDuplicadaRecenteAsync(int pecaId, string nomeCliente, string comentario, TimeSpan janela)
+    {
+        var limite = DateTime.UtcNow.Subtract(janela);
+        var comentarioTrim = (comentario ?? string.Empty).Trim();
+        var nomeTrim = (nomeCliente ?? string.Empty).Trim();
+
+        return await _context.Avaliacoes
+            .AnyAsync(a => a.PecaId == pecaId &&
+                           a.NomeCliente == nomeTrim &&
+                           a.Comentario == comentarioTrim &&
+                           a.DataCriacao >= limite);
+    }
+
     public async Task RemoverAsync(int id)
     {
         var avaliacao = await _context.Avaliacoes.FindAsync(id);

@@ -1755,4 +1755,108 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     }
 }
 
+/* ==========================================================================
+   WIDGET DE AVALIAÇÃO DE PRODUTO & MODAL DE FEEDBACK
+   ========================================================================== */
+
+/* Âncora com scroll-margin para compensar a navbar fixa */
+#avaliacoes {
+    scroll-margin-top: 100px;
+}
+
+/* Seletor de Estrelas Interativo (Hover reverso acessível) */
+.star-rating-widget {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 6px 0;
+}
+
+.star-rating-widget .star-radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.star-rating-widget .star-label {
+    cursor: pointer;
+    font-size: 1.65rem;
+    color: var(--text-muted);
+    transition: transform 0.15s ease, color 0.15s ease, filter 0.15s ease;
+    padding: 2px 4px;
+    margin: 0;
+    user-select: none;
+}
+
+/* Acender estrelas selecionadas */
+.star-rating-widget .star-radio:checked ~ .star-label,
+.star-rating-widget .star-label:hover,
+.star-rating-widget .star-label:hover ~ .star-label {
+    color: var(--tuning-gold);
+    filter: drop-shadow(0 0 6px rgba(255, 183, 3, 0.4));
+}
+
+.star-rating-widget .star-label:hover {
+    transform: scale(1.18);
+}
+
+.star-rating-widget .star-radio:focus-visible + .star-label {
+    outline: 2px dashed var(--accent-green);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* Ícone de Checkmark Animado no Modal de Sucesso */
+.success-checkmark-circle {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--accent-green-tint);
+    border: 2px solid var(--accent-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px var(--accent-green-glow);
+    animation: pulseCheckCircle 1.6s ease-out infinite alternate;
+}
+
+.success-checkmark-icon {
+    font-size: 2.5rem;
+    color: var(--accent-green);
+    font-weight: 900;
+    animation: scaleCheckmark 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pulseCheckCircle {
+    0% {
+        box-shadow: 0 0 15px rgba(154, 224, 0, 0.25);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(154, 224, 0, 0.6);
+        transform: scale(1.04);
+    }
+}
+
+@keyframes scaleCheckmark {
+    0% {
+        transform: scale(0.4);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .success-checkmark-circle {
+        animation: none;
+    }
+    .success-checkmark-icon {
+        animation: none;
+    }
+}
+
 

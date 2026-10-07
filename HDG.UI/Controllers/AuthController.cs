@@ -82,19 +82,22 @@ public class AuthController : Controller
     }
 
     [HttpGet]
-    public IActionResult Registro()
+    public IActionResult Registro(string? returnUrl = null)
     {
         if (User.Identity?.IsAuthenticated == true)
             return RedirectToAction("Index", "Home");
 
+        ViewData["ReturnUrl"] = returnUrl;
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("AuthRateLimitPolicy")]
-    public async Task<IActionResult> Registro(RegistroDto model)
+    public async Task<IActionResult> Registro(RegistroDto model, string? returnUrl = null)
     {
+        ViewData["ReturnUrl"] = returnUrl;
+
         if (!ModelState.IsValid)
             return View(model);
 
@@ -125,6 +128,10 @@ public class AuthController : Controller
         {
             await _userManager.AddToRoleAsync(user, "Cliente");
             await _signInManager.SignInAsync(user, isPersistent: true);
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
             return RedirectToAction("Index", "Home");
         }
 

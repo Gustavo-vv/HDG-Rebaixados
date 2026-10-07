@@ -1,4 +1,4 @@
-﻿using HDG.Application.DTOs;
+using HDG.Application.DTOs;
 using HDG.Application.Servicos.Services;
 using HDG.Domain.Entidades;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +33,21 @@ public class AdminController : Controller
         _userManager = userManager;
         _usuarioAdminService = usuarioAdminService;
         _logger = logger;
+    }
+
+    public override async Task OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context, Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate next)
+    {
+        try
+        {
+            var todas = await _avaliacaoService.ObterTodasParaModeracaoAsync();
+            ViewBag.AvaliacoesPendentesBadge = todas.Count(a => !a.Aprovada);
+        }
+        catch
+        {
+            ViewBag.AvaliacoesPendentesBadge = 0;
+        }
+
+        await base.OnActionExecutionAsync(context, next);
     }
 
     // ==========================================
@@ -267,6 +282,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ActionName("AvaliacaoAprovar")]
     public async Task<IActionResult> AvaliacaoAprovar(int id)
     {
         try
@@ -284,6 +300,35 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [ActionName("AprovarAvaliacao")]
+    public Task<IActionResult> AprovarAvaliacaoAlias(int id) => AvaliacaoAprovar(id);
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("AvaliacaoDesaprovar")]
+    public async Task<IActionResult> AvaliacaoDesaprovar(int id)
+    {
+        try
+        {
+            await _avaliacaoService.DesaprovarAsync(id);
+            TempData["MensagemSucesso"] = "Avaliação despublicada e retornada para moderação!";
+        }
+        catch (Exception ex)
+        {
+            TempData["MensagemErro"] = "Erro ao despublicar avaliação: " + ex.Message;
+        }
+
+        return RedirectToAction(nameof(Avaliacoes));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("DesaprovarAvaliacao")]
+    public Task<IActionResult> DesaprovarAvaliacaoAlias(int id) => AvaliacaoDesaprovar(id);
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("AvaliacaoExcluir")]
     public async Task<IActionResult> AvaliacaoExcluir(int id)
     {
         try
@@ -298,6 +343,11 @@ public class AdminController : Controller
 
         return RedirectToAction(nameof(Avaliacoes));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("ExcluirAvaliacao")]
+    public Task<IActionResult> ExcluirAvaliacaoAlias(int id) => AvaliacaoExcluir(id);
 
     // ==========================================
     // GESTÃO DE USUÁRIOS

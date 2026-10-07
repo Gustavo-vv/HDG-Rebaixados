@@ -1,8 +1,12 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using HDG.Application.DTOs;
 using HDG.Application.Servicos.Services;
+using HDG.Domain.Entidades;
 using HDG.Domain.Enums;
 using HDG.UI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HDG.UI.Controllers;
@@ -11,17 +15,20 @@ public class HomeController : Controller
 {
     private readonly IPecaService _pecaService;
     private readonly IAvaliacaoService _avaliacaoService;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
     private readonly ILogger<HomeController> _logger;
 
     public HomeController(
         IPecaService pecaService,
         IAvaliacaoService avaliacaoService,
+        UserManager<ApplicationUser> userManager,
         IConfiguration configuration,
         ILogger<HomeController> logger)
     {
         _pecaService = pecaService;
         _avaliacaoService = avaliacaoService;
+        _userManager = userManager;
         _configuration = configuration;
         _logger = logger;
     }
@@ -52,10 +59,18 @@ public class HomeController : Controller
         ViewBag.Avaliacoes = avaliacoes;
         ViewBag.WhatsAppNumero = whatsAppNum;
 
+        // Se o usuário estiver autenticado, disponibilizar o NomeCompleto
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            ViewBag.UsuarioNomeCompleto = user?.NomeCompleto ?? User.Identity.Name ?? "Cliente";
+        }
+
         return View(peca);
     }
 
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EnviarAvaliacao([FromForm] CriarAvaliacaoDto dto)
     {
@@ -64,17 +79,32 @@ public class HomeController : Controller
             if (dto.Nota < 1 || dto.Nota > 5)
             {
                 TempData["ErroAvaliacao"] = "A nota deve ser entre 1 e 5 estrelas.";
-                return RedirectToAction(nameof(Detalhes), new { id = dto.PecaId });
+                return RedirectToAction(nameof(Detalhes), "Home", new { id = dto.PecaId }, "avaliacoes");
             }
 
-            if (string.IsNullOrWhiteSpace(dto.NomeCliente))
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || !user.Ativo)
             {
-                TempData["ErroAvaliacao"] = "Informe seu nome para enviar a avaliação.";
-                return RedirectToAction(nameof(Detalhes), new { id = dto.PecaId });
+                TempData["ErroAvaliacao"] = "Sua conta não possui permissão para enviar avaliações.";
+                return RedirectToAction(nameof(Detalhes), "Home", new { id = dto.PecaId }, "avaliacoes");
             }
 
-            await _avaliacaoService.CriarAsync(dto);
-            TempData["SucessoAvaliacao"] = "Obrigado! Sua avaliação foi enviada e será exibida após moderação.";
+            // O nome do cliente NÃO vem do formulário (qualquer valor forjado é ignorado)
+            var nomeCliente = !string.IsNullOrWhiteSpace(user.NomeCompleto) ? user.NomeCompleto.Trim() : (user.UserName ?? "Cliente");
+
+            await _avaliacaoService.CriarParaUsuarioAsync(dto, nomeCliente, user.Id);
+
+            var primeiroNome = nomeCliente.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? nomeCliente;
+            TempData["SucessoAvaliacao"] = $"Obrigado, {primeiroNome}! Sua avaliação foi enviada e será publicada após a análise da nossa equipe.";
+            TempData["PrimeiroNomeAvaliacao"] = primeiroNome;
+        }
+        catch (ArgumentException ex)
+        {
+            TempData["ErroAvaliacao"] = ex.Message;
+        }
+        catch (InvalidOperationException ex)
+        {
+            TempData["ErroAvaliacao"] = ex.Message;
         }
         catch (Exception ex)
         {
@@ -82,8 +112,9 @@ public class HomeController : Controller
             TempData["ErroAvaliacao"] = "Não foi possível registrar sua avaliação. Tente novamente mais tarde.";
         }
 
-        return RedirectToAction(nameof(Detalhes), new { id = dto.PecaId });
+        return RedirectToAction(nameof(Detalhes), "Home", new { id = dto.PecaId }, "avaliacoes");
     }
+
 
     [HttpGet]
     public IActionResult Sobre()

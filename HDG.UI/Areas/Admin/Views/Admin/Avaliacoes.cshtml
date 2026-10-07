@@ -1,106 +1,118 @@
 @model IEnumerable<HDG.Application.DTOs.AvaliacaoDto>
 @{
     ViewData["Title"] = "Moderação de Avaliações";
+
+    // Fuso Horário de Brasília
+    TimeZoneInfo fusoBrasilia;
+    try
+    {
+        fusoBrasilia = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+    }
+    catch
+    {
+        try
+        {
+            fusoBrasilia = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo");
+        }
+        catch
+        {
+            fusoBrasilia = TimeZoneInfo.Local;
+        }
+    }
+
+    var todas = Model.OrderByDescending(a => a.DataCriacao).ToList();
+    var pendentes = todas.Where(a => !a.Aprovada).ToList();
+    var aprovadas = todas.Where(a => a.Aprovada).ToList();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
     <div>
         <h1 class="display-6 fw-bold text-white mb-1 font-heading">Moderação de Avaliações</h1>
-        <p class="text-secondary small mb-0">Aprove comentários reais de clientes ou exclua spam antes de exibir no catálogo.</p>
+        <p class="text-secondary small mb-0">Aprove comentários autênticos de clientes, despublique avaliações ou recuse conteúdos indesejados.</p>
     </div>
 </div>
 
-<div class="glass-panel p-3 p-md-4">
-    @if (!Model.Any())
-    {
-        <div class="text-center py-5 text-secondary">
-            <i class="bi bi-chat-square-heart display-4 mb-3 d-block text-secondary opacity-50"></i>
-            <h4 class="text-white">Nenhuma avaliação encontrada</h4>
-            <p>Quando os clientes enviarem avaliações pelas páginas das peças, elas aparecerão aqui para moderação.</p>
-        </div>
-    }
-    else
-    {
-        <div class="table-responsive">
-            <table class="table-dark-custom table-admin-responsive">
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Cliente</th>
-                        <th>Peça</th>
-                        <th>Nota</th>
-                        <th>Comentário</th>
-                        <th>Status</th>
-                        <th class="text-end">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var av in Model)
-                    {
-                        <tr>
-                            <td data-label="Data" class="small text-secondary">@av.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td data-label="Cliente" class="text-white fw-bold">@av.NomeCliente</td>
-                            <td data-label="Peça">
-                                <a asp-area="" asp-controller="Home" asp-action="Detalhes" asp-route-id="@av.PecaId" target="_blank" class="text-decoration-none text-light">
-                                    @av.PecaNome <i class="bi bi-box-arrow-up-right small text-secondary"></i>
-                                </a>
-                            </td>
-                            <td data-label="Nota">
-                                <div class="rating-stars small">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= av.Nota)
-                                        {
-                                            <i class="bi bi-star-fill"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="bi bi-star text-secondary"></i>
-                                        }
-                                    }
-                                    <span class="text-white ms-1">(@av.Nota)</span>
-                                </div>
-                            </td>
-                            <td data-label="Comentário" class="small text-secondary" style="max-width: 300px;">
-                                "@av.Comentario"
-                            </td>
-                            <td data-label="Status">
-                                @if (av.Aprovada)
-                                {
-                                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50">
-                                        <i class="bi bi-check-circle"></i> Aprovada
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50">
-                                        <i class="bi bi-clock-history"></i> Pendente
-                                    </span>
-                                }
-                            </td>
-                            <td data-label="Ações" class="text-end">
-                                <div class="d-flex justify-content-end gap-2">
-                                    @if (!av.Aprovada)
-                                    {
-                                        <form asp-action="AprovarAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-racing" title="Aprovar Comentário" aria-label="Aprovar avaliação de @av.NomeCliente">
-                                                <i class="bi bi-check-lg"></i> Aprovar
-                                            </button>
-                                        </form>
-                                    }
-                                    <form asp-action="ExcluirAvaliacao" asp-route-id="@av.Id" method="post" class="d-inline" onsubmit="return confirm('Excluir esta avaliação permanentemente?');">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-dark-custom text-danger" title="Excluir" aria-label="Excluir avaliação de @av.NomeCliente">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+<!-- Abas de Navegação -->
+<ul class="nav nav-pills mb-4 gap-2" id="moderacaoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active px-4 py-2 font-display text-uppercase position-relative" id="tab-pendentes" data-bs-toggle="pill" data-bs-target="#content-pendentes" type="button" role="tab" aria-controls="content-pendentes" aria-selected="true" style="letter-spacing: 0.05em;">
+            <i class="bi bi-clock-history me-1"></i> Pendentes
+            <span class="badge rounded-pill bg-warning text-dark ms-2">@pendentes.Count</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link px-4 py-2 font-display text-uppercase" id="tab-aprovadas" data-bs-toggle="pill" data-bs-target="#content-aprovadas" type="button" role="tab" aria-controls="content-aprovadas" aria-selected="false" style="letter-spacing: 0.05em;">
+            <i class="bi bi-check-circle me-1"></i> Aprovadas
+            <span class="badge rounded-pill bg-success text-white ms-2">@aprovadas.Count</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link px-4 py-2 font-display text-uppercase" id="tab-todas" data-bs-toggle="pill" data-bs-target="#content-todas" type="button" role="tab" aria-controls="content-todas" aria-selected="false" style="letter-spacing: 0.05em;">
+            <i class="bi bi-collection me-1"></i> Todas
+            <span class="badge rounded-pill bg-secondary text-white ms-2">@todas.Count</span>
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="moderacaoTabsContent">
+    <!-- ABA PENDENTES (PADRÃO) -->
+    <div class="tab-pane fade show active" id="content-pendentes" role="tabpanel" aria-labelledby="tab-pendentes" tabindex="0">
+        @await Html.PartialAsync("_TabelaAvaliacoes", pendentes, new ViewDataDictionary(ViewData) { { "Fuso", fusoBrasilia }, { "Aba", "pendentes" } })
+    </div>
+
+    <!-- ABA APROVADAS -->
+    <div class="tab-pane fade" id="content-aprovadas" role="tabpanel" aria-labelledby="tab-aprovadas" tabindex="0">
+        @await Html.PartialAsync("_TabelaAvaliacoes", aprovadas, new ViewDataDictionary(ViewData) { { "Fuso", fusoBrasilia }, { "Aba", "aprovadas" } })
+    </div>
+
+    <!-- ABA TODAS -->
+    <div class="tab-pane fade" id="content-todas" role="tabpanel" aria-labelledby="tab-todas" tabindex="0">
+        @await Html.PartialAsync("_TabelaAvaliacoes", todas, new ViewDataDictionary(ViewData) { { "Fuso", fusoBrasilia }, { "Aba", "todas" } })
+    </div>
 </div>
+
+<!-- Modal de Confirmação para Recusar / Excluir Avaliação -->
+<div class="modal fade" id="modalRecusarAvaliacao" tabindex="-1" aria-labelledby="modalRecusarAvaliacaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-panel border border-danger border-opacity-50" style="background: var(--bg-card);">
+            <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
+                <h5 class="modal-title text-danger fw-bold font-heading d-flex align-items-center gap-2" id="modalRecusarAvaliacaoLabel">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Recusar Avaliação
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="text-white mb-2 fs-6">Recusar esta avaliação de <strong id="recusarNomeCliente" class="text-warning"></strong>?</p>
+                <p class="text-secondary small mb-0">Ela será excluída permanentemente e não aparecerá no site nem nas estatísticas da peça.</p>
+            </div>
+            <div class="modal-footer border-top border-secondary border-opacity-25 pt-3">
+                <button type="button" class="btn btn-outline-dark-custom" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formConfirmarRecusa" asp-action="AvaliacaoExcluir" method="post" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="recusarAvaliacaoId" value="" />
+                    <button type="submit" class="btn btn-danger d-flex align-items-center gap-2">
+                        <i class="bi bi-trash-fill"></i> Confirmar Exclusão
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var modalEl = document.getElementById('modalRecusarAvaliacao');
+            if (modalEl) {
+                modalEl.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    if (!button) return;
+                    var id = button.getAttribute('data-avaliacao-id');
+                    var nome = button.getAttribute('data-avaliacao-nome');
+                    document.getElementById('recusarAvaliacaoId').value = id;
+                    document.getElementById('recusarNomeCliente').textContent = nome || 'Cliente';
+                });
+            }
+        });
+    </script>
+}

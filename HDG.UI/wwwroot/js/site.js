@@ -155,4 +155,76 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // 5. Modal Global de Sucesso da Avaliação
+    const modalSucessoEl = document.getElementById('modalSucessoAvaliacao');
+    if (modalSucessoEl && typeof bootstrap !== 'undefined') {
+        const modalSucesso = new bootstrap.Modal(modalSucessoEl, {
+            backdrop: true,
+            keyboard: true
+        });
+        modalSucesso.show();
+
+        modalSucessoEl.addEventListener('shown.bs.modal', () => {
+            const btnEntendi = document.getElementById('btnFecharModalSucesso');
+            if (btnEntendi) btnEntendi.focus();
+        });
+    }
+
+    // 6. Toasts Globais de Notificação
+    const toastElements = document.querySelectorAll('.toast');
+    if (toastElements.length > 0 && typeof bootstrap !== 'undefined') {
+        toastElements.forEach(t => {
+            const toast = new bootstrap.Toast(t);
+            toast.show();
+        });
+    }
+
+    // 7. Formulário de Avaliação (Estrelas, Contador e Bloqueio de Clique Duplo)
+    const starRadios = document.querySelectorAll('.star-rating-widget .star-radio');
+    const labelNotaDescricao = document.getElementById('labelNotaDescricao');
+
+    if (starRadios.length > 0 && labelNotaDescricao) {
+        starRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const desc = radio.getAttribute('data-desc');
+                if (desc) {
+                    labelNotaDescricao.textContent = desc;
+                }
+            });
+        });
+    }
+
+    const comentarioTexto = document.getElementById('comentarioTexto');
+    const comentarioContador = document.getElementById('comentarioContador');
+    if (comentarioTexto && comentarioContador) {
+        comentarioTexto.addEventListener('input', () => {
+            const tamanho = comentarioTexto.value.length;
+            comentarioContador.textContent = `${tamanho}/1000`;
+            if (tamanho >= 950) {
+                comentarioContador.classList.add('text-warning');
+            } else {
+                comentarioContador.classList.remove('text-warning');
+            }
+        });
+    }
+
+    const formAvaliacaoPeca = document.getElementById('formAvaliacaoPeca');
+    if (formAvaliacaoPeca) {
+        formAvaliacaoPeca.addEventListener('submit', (e) => {
+            const btn = document.getElementById('btnEnviarAvaliacao');
+            if (btn) {
+                const btnText = btn.querySelector('.btn-text');
+                const btnLoading = btn.querySelector('.btn-loading');
+
+                btn.disabled = true;
+                if (btnText) btnText.classList.add('d-none');
+                if (btnLoading) {
+                    btnLoading.classList.remove('d-none');
+                    btnLoading.classList.add('d-inline-flex');
+                }
+            }
+        });
+    }
 });
+

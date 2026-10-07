@@ -89,7 +89,7 @@
                             </button>
 
                             <div class="text-center text-secondary small">
-                                Não possui conta? <a asp-action="Registro" class="fw-bold text-decoration-none" style="color: var(--accent-green);">Cadastre-se grátis</a>
+                                Não possui conta? <a asp-action="Registro" asp-route-returnUrl="@returnUrl" class="fw-bold text-decoration-none" style="color: var(--accent-green);">Cadastre-se grátis</a>
                             </div>
                         </form>
                     </div>
