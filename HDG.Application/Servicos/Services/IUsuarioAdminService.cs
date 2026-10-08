@@ -9,5 +9,4 @@ public interface IUsuarioAdminService
     Task<(bool Sucesso, string[] Erros)> EditarDadosAsync(EditarUsuarioDto dto, string adminLogadoId);
     Task<(bool Sucesso, string[] Erros, bool NovoStatus)> AlternarStatusAsync(string id, string adminLogadoId);
     Task<(bool Sucesso, string[] Erros)> AlterarSenhaAsync(AlterarSenhaAdminDto dto, string adminLogadoId);
-    Task<(bool Sucesso, string[] Erros)> AlterarPerfilAsync(AlterarPerfilDto dto, string adminLogadoId);
 }

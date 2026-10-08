@@ -1,3 +1,8 @@
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var whatsAppNum = Configuration["WhatsApp:Numero"] ?? "5511999999999";
+    var whatsAppMsgFab = Uri.EscapeDataString(Configuration["WhatsApp:MensagemPadrao"] ?? "Olá! Gostaria de atendimento sobre peças na HDG Rebaixados.");
+}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -132,8 +137,58 @@
                         </li>
                     </ul>
 
-                    <!-- Perfil & Botão Chamar no Zap -->
-                    <div class="d-flex align-items-center gap-3">
+                    <!-- Bloco de Ações e Usuário no Mobile (Inline, sem popover cortado) -->
+                    <div class="d-lg-none mt-2 pt-3 border-top border-secondary border-opacity-25 w-100">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="mobile-user-section">
+                                <div class="mobile-user-header">
+                                    <div class="mobile-user-avatar">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                    <div class="mobile-user-info">
+                                        <div class="mobile-user-name">@(User.Identity.Name ?? "Minha Conta")</div>
+                                        <div class="mobile-user-role">@(User.IsInRole("Admin") ? "Administrador" : "Cliente")</div>
+                                    </div>
+                                </div>
+                                <div class="mobile-user-links">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-area="Admin" asp-controller="Admin" asp-action="Index" class="mobile-user-link text-warning fw-bold">
+                                            <i class="bi bi-speedometer2"></i> Painel Admin
+                                        </a>
+                                    }
+                                    <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="mobile-user-link text-danger w-100 border-0 text-start bg-transparent">
+                                            <i class="bi bi-box-arrow-right"></i> Encerrar sessão
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-flex flex-column gap-2 mb-3">
+                                <a asp-area="" asp-controller="Auth" asp-action="Login" class="btn btn-racing w-100 justify-content-center">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+                                </a>
+                                <a asp-area="" asp-controller="Auth" asp-action="Registro" class="btn btn-outline-custom w-100 justify-content-center">
+                                    <i class="bi bi-person-plus me-1"></i> Criar conta
+                                </a>
+                            </div>
+                        }
+
+                        <a href="https://wa.me/@whatsAppNum?text=@Uri.EscapeDataString("Olá! Quero solicitar um orçamento para o meu carro com a HDG Rebaixados.")" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="btn-orcamento-mobile">
+                            <i class="bi bi-whatsapp"></i> <span>Solicitar orçamento</span>
+                        </a>
+                    </div>
+
+                    <!-- Perfil & Botão Chamar no Zap (Desktop >= 992px) -->
+                    <div class="d-none d-lg-flex align-items-center gap-3">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <div class="dropdown">
@@ -168,7 +223,7 @@
                             </a>
                         }
 
-                        <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Quero montar um setup para meu carro com a HDG Rebaixados.")" target="_blank" class="btn btn-whatsapp text-nowrap">
+                        <a href="https://wa.me/@whatsAppNum?text=@Uri.EscapeDataString("Olá! Quero montar um setup para meu carro com a HDG Rebaixados.")" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp text-nowrap">
                             <i class="bi bi-whatsapp"></i> <span>Falar no Zap</span>
                         </a>
                     </div>
@@ -182,14 +237,16 @@
         @RenderBody()
     </main>
 
-    <!-- Botão Flutuante de WhatsApp com Pulso Neon -->
-    <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Gostaria de falar com um preparador da HDG Rebaixados.")" 
-       target="_blank" 
-       class="whatsapp-float-btn" 
-       title="Falar no WhatsApp com a Garagem HDG" 
-       aria-label="Atendimento via WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-        <span class="whatsapp-float-pulse"></span>
+    <!-- Botão Flutuante de WhatsApp (Pill Premium) -->
+    <a href="https://wa.me/@whatsAppNum?text=@whatsAppMsgFab"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="whatsapp-fab"
+       id="whatsapp-fab"
+       aria-label="Falar com um preparador no WhatsApp">
+        <i class="bi bi-whatsapp whatsapp-fab-icon"></i>
+        <span class="whatsapp-fab-label">Fale com um preparador</span>
+        <span class="whatsapp-fab-online" aria-hidden="true"></span>
     </a>
 
     <!-- Rodapé Premium Autêntico (4 Colunas) -->
@@ -242,7 +299,7 @@
                 <div class="col-lg-3 col-md-12">
                     <h6 class="text-white fw-bold mb-3 font-heading text-uppercase">Acesso Rápido</h6>
                     <div class="d-flex flex-column gap-2">
-                        <a href="https://wa.me/5511999999999?text=@Uri.EscapeDataString("Olá! Quero cotar um kit de suspensão para o meu carro.")" target="_blank" class="btn btn-sm btn-whatsapp text-start">
+                        <a href="https://wa.me/@whatsAppNum?text=@Uri.EscapeDataString("Olá! Quero cotar um kit de suspensão para o meu carro.")" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-whatsapp text-start">
                             <i class="bi bi-chat-dots-fill me-1"></i> Falar com Preparador
                         </a>
                         @if (User.IsInRole("Admin"))
@@ -313,42 +370,36 @@
     <!-- Seção de Modais Renderizados no Nível Raiz do Body -->
     @await RenderSectionAsync("Modais", required: false)
 
-    <!-- Container Global de Toasts (Notificações Flutuantes no Canto Superior Direito) -->
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
+    <!-- Container Global Unificado de Notificações / Toasts (Filho direto de body, canto inferior) -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true">
         @if (TempData["ErroAvaliacao"] != null)
         {
-            <div class="toast align-items-center text-white bg-danger border-0 show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-center gap-2">
-                        <i class="bi bi-exclamation-octagon-fill fs-5 text-white"></i>
-                        <div>@TempData["ErroAvaliacao"]</div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
-                </div>
+            <div class="hdg-toast hdg-toast-erro" role="alert" data-bs-autohide="true" data-bs-delay="7000">
+                <i class="bi bi-exclamation-octagon-fill hdg-toast-icon"></i>
+                <div class="hdg-toast-body">@TempData["ErroAvaliacao"]</div>
+                <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         }
         @if (TempData["MensagemErro"] != null)
         {
-            <div class="toast align-items-center text-white bg-danger border-0 show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-center gap-2">
-                        <i class="bi bi-exclamation-triangle-fill fs-5 text-white"></i>
-                        <div>@TempData["MensagemErro"]</div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
-                </div>
+            <div class="hdg-toast hdg-toast-erro" role="alert" data-bs-autohide="true" data-bs-delay="7000">
+                <i class="bi bi-exclamation-triangle-fill hdg-toast-icon"></i>
+                <div class="hdg-toast-body">@TempData["MensagemErro"]</div>
+                <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         }
         @if (TempData["MensagemSucesso"] != null && TempData["SucessoAvaliacao"] == null)
         {
-            <div class="toast align-items-center text-white bg-dark border border-success border-opacity-50 show shadow-lg" role="alert" aria-live="polite" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-center gap-2 text-white">
-                        <i class="bi bi-check-circle-fill fs-5" style="color: var(--accent-green);"></i>
-                        <div>@TempData["MensagemSucesso"]</div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
-                </div>
+            <div class="hdg-toast hdg-toast-sucesso" role="status" data-bs-autohide="true" data-bs-delay="5000">
+                <i class="bi bi-check-circle-fill hdg-toast-icon"></i>
+                <div class="hdg-toast-body">@TempData["MensagemSucesso"]</div>
+                <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         }
     </div>

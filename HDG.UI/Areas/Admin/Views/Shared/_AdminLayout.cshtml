@@ -38,7 +38,7 @@
                     data-bs-toggle="offcanvas" 
                     data-bs-target="#adminOffcanvasSidebar" 
                     aria-controls="adminOffcanvasSidebar" 
-                    aria-label="Abrir Menu de Navegação">
+                    aria-label="Abrir menu">
                 <i class="bi bi-list"></i>
             </button>
 
@@ -56,7 +56,6 @@
         <div class="d-flex align-items-center gap-2">
             <a asp-area="" asp-controller="Home" asp-action="Index" 
                class="btn btn-outline-dark-custom admin-btn-catalog" 
-               target="_blank" 
                aria-label="Ver Catálogo Público"
                title="Ver Catálogo Público">
                 <i class="bi bi-box-arrow-up-right"></i>
@@ -89,125 +88,87 @@
 
     <!-- Shell do Painel Administrativo (CSS Grid) -->
     <div class="admin-shell-grid">
-        <!-- Sidebar Unificada: Offcanvas no Mobile/Tablet (< 992px) e Sticky Estático no Desktop (>= 992px via offcanvas-lg) -->
-        <aside class="offcanvas-lg offcanvas-start admin-sidebar-desktop" tabindex="-1" id="adminOffcanvasSidebar" aria-labelledby="adminOffcanvasLabel">
-            <div class="offcanvas-header d-lg-none border-bottom border-secondary border-opacity-25 pb-3 mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <img src="~/img/hdg-logo-header.png" alt="HDG Rebaixados" style="height: 36px; width: auto;" asp-append-version="true" />
-                    <span class="admin-badge-top">ADMIN</span>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#adminOffcanvasSidebar" aria-label="Fechar Menu"></button>
-            </div>
-
-            <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
-                <div>
-                    <div class="small text-uppercase text-secondary fw-bold px-3 mb-2" style="letter-spacing: 0.08em; font-size: 0.72rem;">
-                        Menu de Gestão
-                    </div>
-                    <nav class="d-flex flex-column px-2 px-lg-0">
-                        <a asp-area="Admin" asp-controller="Admin" asp-action="Index" 
-                           class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
-                            <i class="bi bi-speedometer2"></i> Visão Geral
-                        </a>
-                        <a asp-area="Admin" asp-controller="Admin" asp-action="Pecas" 
-                           class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString()?.StartsWith("Peca") == true ? "active" : "")">
-                            <i class="bi bi-boxes"></i> Catálogo de Peças
-                        </a>
-                        <a asp-area="Admin" asp-controller="Admin" asp-action="Avaliacoes" 
-                           class="admin-nav-item d-flex justify-content-between align-items-center @(ViewContext.RouteData.Values["action"]?.ToString() == "Avaliacoes" ? "active" : "")">
-                            <span><i class="bi bi-chat-square-quote-fill me-2"></i> Moderação</span>
-                            @if ((ViewBag.AvaliacoesPendentesBadge ?? 0) > 0)
-                            {
-                                <span class="badge rounded-pill bg-warning text-dark font-display px-2 py-1" style="font-size: 0.72rem; letter-spacing: 0.05em;">
-                                    @ViewBag.AvaliacoesPendentesBadge
-                                </span>
-                            }
-                        </a>
-                        <a asp-area="Admin" asp-controller="Admin" asp-action="Usuarios" 
-                           class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Usuarios" ? "active" : "")">
-                            <i class="bi bi-people-fill"></i> Usuários
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="pt-3 border-top border-secondary border-opacity-25 mt-4 px-2 px-lg-0">
-                    <div class="small text-uppercase text-secondary fw-bold px-3 mb-2 d-none d-lg-block" style="letter-spacing: 0.08em; font-size: 0.72rem;">
-                        Ações Rápidas
-                    </div>
-                    <a asp-area="Admin" asp-controller="Admin" asp-action="PecaNova" class="btn btn-racing w-100 justify-content-center">
-                        <i class="bi bi-plus-lg me-1"></i> Cadastrar Peça
-                    </a>
-                </div>
-            </div>
+        <!-- Sidebar Desktop (Fixa / Sticky no fluxo >= 992px) -->
+        <aside class="admin-sidebar-desktop d-none d-lg-block" id="adminSidebarDesktop">
+            <partial name="_AdminMenu" />
         </aside>
 
         <!-- Conteúdo Principal da Página Admin -->
         <main class="admin-main-content">
-            <div class="admin-content-container">
-                <!-- Container de Toasts para Mensagens do Admin -->
-                <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;">
-                    @if (TempData["MensagemSucesso"] != null)
-                    {
-                        <div class="toast align-items-center text-white bg-dark border border-success border-opacity-50 show shadow-lg" role="alert" aria-live="polite" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
-                            <div class="d-flex">
-                                <div class="toast-body d-flex align-items-center gap-2">
-                                    <i class="bi bi-check-circle-fill fs-5" style="color: var(--accent-green);"></i>
-                                    <div>@TempData["MensagemSucesso"]</div>
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
-                            </div>
-                        </div>
-                    }
-                    @if (TempData["MensagemErro"] != null)
-                    {
-                        <div class="toast align-items-center text-white bg-danger border-0 show shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="6000">
-                            <div class="d-flex">
-                                <div class="toast-body d-flex align-items-center gap-2">
-                                    <i class="bi bi-exclamation-octagon-fill fs-5 text-white"></i>
-                                    <div>@TempData["MensagemErro"]</div>
-                                </div>
-                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                @RenderBody()
-            </div>
+            @RenderBody()
         </main>
+    </div>
+
+    <!-- Offcanvas Mobile (< 992px) como filho DIRETO do body (Fora do shell e sem stacking context) -->
+    <div class="offcanvas offcanvas-start admin-offcanvas-mobile d-lg-none" 
+         tabindex="-1" 
+         id="adminOffcanvasSidebar" 
+         aria-labelledby="adminOffcanvasLabel"
+         aria-modal="true"
+         role="dialog">
+        @{
+            ViewData["IsMobileMenu"] = true;
+        }
+        <partial name="_AdminMenu" />
     </div>
 
     <!-- Seção de Modais Renderizados no Nível Raiz do Body (Previne conflitos de stacking context e backdrop) -->
     @await RenderSectionAsync("Modais", required: false)
 
+    <!-- Container Global Unificado de Notificações / Toasts (Filho direto de body, canto inferior) -->
+    <div id="toast-container" aria-live="polite" aria-atomic="true">
+        @if (TempData["MensagemSucesso"] != null)
+        {
+            <div class="hdg-toast hdg-toast-sucesso" role="status" data-bs-autohide="true" data-bs-delay="5000">
+                <i class="bi bi-check-circle-fill hdg-toast-icon"></i>
+                <div class="hdg-toast-body">@TempData["MensagemSucesso"]</div>
+                <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["MensagemErro"] != null)
+        {
+            <div class="hdg-toast hdg-toast-erro" role="alert" data-bs-autohide="true" data-bs-delay="7000">
+                <i class="bi bi-exclamation-octagon-fill hdg-toast-icon"></i>
+                <div class="hdg-toast-body">@TempData["MensagemErro"]</div>
+                <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        }
+    </div>
+
     <!-- Bootstrap Bundle JS & Custom Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        // Fechamento automático do menu offcanvas no mobile e limpeza de backdrop ao redimensionar
+        // Gerenciamento completo do menu offcanvas no mobile do painel Admin
         document.addEventListener('DOMContentLoaded', function () {
             var offcanvasEl = document.getElementById('adminOffcanvasSidebar');
             if (offcanvasEl && typeof bootstrap !== 'undefined') {
                 var bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
-                var navLinks = offcanvasEl.querySelectorAll('.admin-nav-item, .offcanvas-body a.btn');
+
+                // Fechar ao clicar em qualquer link de navegação dentro do offcanvas
+                var navLinks = offcanvasEl.querySelectorAll('.admin-nav-item, .offcanvas-body a');
                 navLinks.forEach(function (link) {
                     link.addEventListener('click', function () {
-                        // Fecha no mobile se estiver em modo offcanvas
                         if (window.innerWidth < 992) {
                             setTimeout(function () {
                                 bsOffcanvas.hide();
-                            }, 150);
+                            }, 100);
                         }
                     });
                 });
 
-                // Limpa backdrops presos e restaura scroll do body ao redimensionar de mobile para desktop
+                // Limpeza estrita ao redimensionar para desktop (>= 992px)
                 window.addEventListener('resize', function () {
                     if (window.innerWidth >= 992) {
                         bsOffcanvas.hide();
                         document.querySelectorAll('.offcanvas-backdrop').forEach(function (backdrop) {
                             backdrop.remove();
                         });
+                        document.body.classList.remove('modal-open');
                         document.body.style.removeProperty('overflow');
                         document.body.style.removeProperty('padding-right');
                     }

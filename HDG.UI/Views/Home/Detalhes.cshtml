@@ -1,4 +1,4 @@
-﻿@model HDG.Application.DTOs.PecaDto
+@model HDG.Application.DTOs.PecaDto
 @{
     ViewData["Title"] = $"{Model.Nome} - Detalhes do Setup";
     var avaliacoes = ViewBag.Avaliacoes as IEnumerable<HDG.Application.DTOs.AvaliacaoDto> ?? Enumerable.Empty<HDG.Application.DTOs.AvaliacaoDto>();
@@ -19,58 +19,55 @@
     };
 }
 
-<div class="container py-5">
-    <!-- Breadcrumb Estilizado -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
+<div class="container py-4 py-md-5">
+    <!-- Breadcrumb Estilizado Responsivo -->
+    <nav aria-label="breadcrumb" class="detalhe-breadcrumb-nav mb-4">
+        <ol class="detalhe-breadcrumb">
             <li class="breadcrumb-item"><a asp-action="Index" class="text-secondary text-decoration-none">Início</a></li>
             <li class="breadcrumb-item"><a asp-action="Index" asp-route-categoria="@((int)Model.Categoria)" class="text-secondary text-decoration-none">@ObterNomeAmigavelCategoria(Model.Categoria)</a></li>
-            <li class="breadcrumb-item active text-white" aria-current="page">@Model.Nome</li>
+            <li class="breadcrumb-item active text-white" aria-current="page" title="@Model.Nome">@Model.Nome</li>
         </ol>
     </nav>
 
     <!-- Cabeçalho do Produto & Mídia -->
-    <div class="row g-5">
-        <!-- Galeria Interativa -->
-        <div class="col-lg-6">
-            <div class="glass-panel p-3">
-                <div class="rounded-3 overflow-hidden bg-black text-center mb-3 position-relative" style="aspect-ratio: 4/3; min-height: 380px;">
+    <div class="row g-4 g-lg-5">
+        <!-- Galeria Interativa Responsiva -->
+        <div class="col-12 col-lg-6" style="min-width: 0;">
+            <div class="glass-panel p-3 detalhe-galeria-card">
+                <div class="detalhe-imagem-container mb-3">
                     @if (Model.Imagens.Any())
                     {
                         <img id="mainImage" 
                              src="@Model.Imagens.First().Url" 
                              alt="@Model.Nome" 
-                             class="img-fluid h-100 w-100" 
-                             style="object-fit: cover;" 
+                             class="detalhe-imagem-principal" 
                              onerror="this.style.display='none'; document.getElementById('detalhePlaceholder').style.display='flex';" />
-                        <div id="detalhePlaceholder" class="product-placeholder-wrap h-100 w-100" style="display: none;">
+                        <div id="detalhePlaceholder" class="product-placeholder-wrap" style="display: none;">
                             <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
                             <span class="product-placeholder-text">Foto em breve</span>
                         </div>
                     }
                     else
                     {
-                        <div class="product-placeholder-wrap h-100 w-100">
+                        <div class="product-placeholder-wrap">
                             <img src="~/img/hdg-logo.png" alt="HDG Rebaixados" class="product-placeholder-logo" asp-append-version="true" />
                             <span class="product-placeholder-text">Foto em breve</span>
                         </div>
                     }
-                    <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 border border-secondary text-white small">
-                        <i class="bi bi-camera me-1"></i> Imagem Oficial HDG
+                    <span class="detalhe-selo-oficial">
+                        <i class="bi bi-camera me-1 text-success"></i> Imagem Oficial HDG
                     </span>
                 </div>
 
                 @if (Model.Imagens.Count > 1)
                 {
-                    <div class="d-flex gap-2 overflow-x-auto pb-2">
-                        @foreach (var img in Model.Imagens)
+                    <div class="detalhe-thumbs-slider" id="detalheThumbsList">
+                        @for (int i = 0; i < Model.Imagens.Count; i++)
                         {
-                            <div class="rounded border border-secondary border-opacity-50 overflow-hidden" 
-                                 style="width: 80px; height: 80px; flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease;"
-                                 onmouseover="this.style.borderColor='var(--accent-green)'"
-                                 onmouseout="this.style.borderColor='rgba(226, 232, 240, 0.2)'"
-                                 onclick="document.getElementById('mainImage').src = '@img.Url'; document.getElementById('mainImage').style.display='block'; if(document.getElementById('detalhePlaceholder')) document.getElementById('detalhePlaceholder').style.display='none';">
-                                <img src="@img.Url" alt="Miniatura" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='@Url.Content("~/img/hdg-logo.png")'; this.style.opacity='0.3';" />
+                            var img = Model.Imagens[i];
+                            <div class="detalhe-thumb-item @(i == 0 ? "active" : "")" 
+                                 onclick="trocarImagemPrincipal('@img.Url', this);">
+                                <img src="@img.Url" alt="Miniatura @(i + 1)" onerror="this.src='@Url.Content("~/img/hdg-logo.png")'; this.style.opacity='0.3';" />
                             </div>
                         }
                     </div>
@@ -300,3 +297,23 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function trocarImagemPrincipal(url, thumbElement) {
+            var mainImg = document.getElementById('mainImage');
+            var placeholder = document.getElementById('detalhePlaceholder');
+            if (mainImg) {
+                mainImg.src = url;
+                mainImg.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            }
+            if (thumbElement) {
+                var allThumbs = document.querySelectorAll('.detalhe-thumb-item');
+                allThumbs.forEach(function (t) { t.classList.remove('active'); });
+                thumbElement.classList.add('active');
+            }
+        }
+    </script>
+}
+

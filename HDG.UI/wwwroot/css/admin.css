@@ -3,8 +3,10 @@
     --admin-sidebar-w: 272px;
     --admin-z-content: 1;
     --admin-z-fab: 1020;
-    --admin-z-sidebar: 1040;
     --admin-z-topbar: 1030;
+    --admin-z-sidebar: 1040;
+    --admin-z-offcanvas-backdrop: 1040;
+    --admin-z-offcanvas: 1045;
     --admin-z-modal-backdrop: 1050;
     --admin-z-modal: 1055;
     --admin-z-toast: 1090;
@@ -179,12 +181,16 @@
     }
 
     .admin-offcanvas-mobile {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: min(86vw, 320px);
         background: var(--bg-surface);
         border-right: 1px solid var(--border-subtle);
-        width: 290px;
-        max-width: 85vw;
         color: var(--text-primary);
-        z-index: var(--admin-z-modal);
+        z-index: var(--admin-z-offcanvas, 1045);
+        overflow-y: auto;
     }
 
     .admin-offcanvas-mobile .offcanvas-header {
@@ -194,6 +200,11 @@
 
     .admin-offcanvas-mobile .offcanvas-body {
         padding: 1.25rem 1rem;
+        overflow-y: auto;
+    }
+
+    .offcanvas-backdrop {
+        z-index: var(--admin-z-offcanvas-backdrop, 1040);
     }
 }
 
@@ -544,4 +555,30 @@
     pointer-events: auto !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. CONTAINER DE TOASTS ADMIN (BOTTOM-RIGHT / MOBILE-CENTER)
+   -------------------------------------------------------------------------- */
+#toast-container {
+    position: fixed !important;
+    bottom: 24px;
+    right: 24px;
+    z-index: var(--admin-z-toast, 1090) !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    width: 100%;
+    pointer-events: none !important;
+}
+
+@media (max-width: 575.98px) {
+    #toast-container {
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+        max-width: none !important;
+        width: calc(100% - 32px) !important;
+    }
 }

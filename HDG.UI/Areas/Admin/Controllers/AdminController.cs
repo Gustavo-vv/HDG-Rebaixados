@@ -440,30 +440,5 @@ public class AdminController : Controller
 
         return RedirectToAction(nameof(Usuarios));
     }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UsuarioAlterarPerfil(AlterarPerfilDto dto)
-    {
-        if (!ModelState.IsValid)
-        {
-            var erros = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-            TempData["MensagemErro"] = string.IsNullOrWhiteSpace(erros) ? "Dados inválidos para alteração de perfil." : erros;
-            return RedirectToAction(nameof(Usuarios));
-        }
-
-        var adminLogadoId = _userManager.GetUserId(User) ?? string.Empty;
-        var resultado = await _usuarioAdminService.AlterarPerfilAsync(dto, adminLogadoId);
-
-        if (resultado.Sucesso)
-        {
-            TempData["MensagemSucesso"] = $"Perfil do usuário atualizado para {dto.NovaRole}!";
-        }
-        else
-        {
-            TempData["MensagemErro"] = string.Join(" ", resultado.Erros);
-        }
-
-        return RedirectToAction(nameof(Usuarios));
-    }
 }
+

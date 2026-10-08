@@ -74,6 +74,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: true });
     }
 
+    // 1.1 Fechar Menu Mobile ao clicar em links e ao redimensionar
+    const hdgNavbar = document.getElementById('hdgNavbar');
+    if (hdgNavbar && typeof bootstrap !== 'undefined') {
+        const collapseInstance = bootstrap.Collapse.getOrCreateInstance(hdgNavbar, { toggle: false });
+        const mobileLinks = hdgNavbar.querySelectorAll('a, button:not(.dropdown-toggle)');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992 && hdgNavbar.classList.contains('show')) {
+                    setTimeout(() => {
+                        collapseInstance.hide();
+                    }, 100);
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992 && hdgNavbar.classList.contains('show')) {
+                collapseInstance.hide();
+            }
+        });
+    }
+
     // 2. Animação de Entrada com Fade/Slide (Intersection Observer)
     const fadeElements = document.querySelectorAll('.fade-in-up');
     if (fadeElements.length > 0) {
@@ -171,14 +193,116 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Toasts Globais de Notificação
-    const toastElements = document.querySelectorAll('.toast');
-    if (toastElements.length > 0 && typeof bootstrap !== 'undefined') {
-        toastElements.forEach(t => {
-            const toast = new bootstrap.Toast(t);
-            toast.show();
+    // 6. Sistema Unificado de Notificações / Toasts HDG
+    function criarToastElement(mensagem, tipo = 'sucesso') {
+        const isErro = tipo === 'erro' || tipo === 'danger' || tipo === 'error';
+        const delay = isErro ? 7000 : 5000;
+        const iconClass = isErro ? 'bi-exclamation-octagon-fill' : 'bi-check-circle-fill';
+        const role = isErro ? 'alert' : 'status';
+
+        const toastDiv = document.createElement('div');
+        toastDiv.className = `hdg-toast ${isErro ? 'hdg-toast-erro' : 'hdg-toast-sucesso'}`;
+        toastDiv.setAttribute('role', role);
+
+        toastDiv.innerHTML = `
+            <i class="bi ${iconClass} hdg-toast-icon"></i>
+            <div class="hdg-toast-body">${mensagem}</div>
+            <button type="button" class="hdg-toast-close" aria-label="Fechar notificação">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        `;
+
+        configurarComportamentoToast(toastDiv, delay);
+        return toastDiv;
+    }
+
+    function configurarComportamentoToast(toastEl, customDelay) {
+        let timer = null;
+        let restante = customDelay || parseInt(toastEl.getAttribute('data-bs-delay') || '5000', 10);
+        let tempoInicio = Date.now();
+
+        const iniciarTimer = () => {
+            tempoInicio = Date.now();
+            timer = setTimeout(() => {
+                fecharToast(toastEl);
+            }, restante);
+        };
+
+        const pausarTimer = () => {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+                restante -= (Date.now() - tempoInicio);
+                if (restante < 500) restante = 500;
+            }
+        };
+
+        const fecharToast = (el) => {
+            if (timer) clearTimeout(timer);
+            el.classList.remove('show');
+            el.classList.add('hide');
+            setTimeout(() => {
+                if (el.parentNode) el.parentNode.removeChild(el);
+            }, 300);
+        };
+
+        // Botão Fechar
+        const btnClose = toastEl.querySelector('.hdg-toast-close');
+        if (btnClose) {
+            btnClose.addEventListener('click', () => fecharToast(toastEl));
+        }
+
+        // Pausa no Hover e no Foco
+        toastEl.addEventListener('mouseenter', pausarTimer);
+        toastEl.addEventListener('mouseleave', iniciarTimer);
+        toastEl.addEventListener('focusin', pausarTimer);
+        toastEl.addEventListener('focusout', iniciarTimer);
+
+        // Exibição animada (respeita reflow)
+        requestAnimationFrame(() => {
+            toastEl.classList.add('show');
+            iniciarTimer();
         });
     }
+
+    window.mostrarToast = function (mensagem, tipo = 'sucesso') {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.setAttribute('aria-live', 'polite');
+            container.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(container);
+        }
+
+        // Limite de no máximo 3 toasts empilhados simultaneamente
+        const toastsAtuais = container.querySelectorAll('.hdg-toast:not(.hide)');
+        if (toastsAtuais.length >= 3) {
+            // Remove o mais antigo imediatamente
+            const maisAntigo = toastsAtuais[0];
+            maisAntigo.classList.remove('show');
+            maisAntigo.classList.add('hide');
+            setTimeout(() => { if (maisAntigo.parentNode) maisAntigo.parentNode.removeChild(maisAntigo); }, 200);
+        }
+
+        const novoToast = criarToastElement(mensagem, tipo);
+        container.appendChild(novoToast);
+    };
+
+    // Inicialização dos Toasts renderizados pelo servidor (TempData)
+    const containerServidor = document.getElementById('toast-container');
+    if (containerServidor) {
+        const toastsServidor = containerServidor.querySelectorAll('.hdg-toast');
+        toastsServidor.forEach((t, index) => {
+            if (index >= 3) {
+                t.remove();
+                return;
+            }
+            const delay = parseInt(t.getAttribute('data-bs-delay') || '5000', 10);
+            configurarComportamentoToast(t, delay);
+        });
+    }
+
 
     // 7. Formulário de Avaliação (Estrelas, Contador e Bloqueio de Clique Duplo)
     const starRadios = document.querySelectorAll('.star-rating-widget .star-radio');
@@ -258,6 +382,43 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.removeProperty('padding-right');
         }
     });
+
+    // 9. WhatsApp FAB – Ocultação inteligente (modal aberto, overlap com footer/toast)
+    const whatsappFab = document.getElementById('whatsapp-fab');
+    if (whatsappFab) {
+        const HIDDEN_CLASS = 'whatsapp-fab--hidden';
+
+        // a) Esconder durante modais
+        document.addEventListener('show.bs.modal', () => {
+            whatsappFab.classList.add(HIDDEN_CLASS);
+        });
+        document.addEventListener('hidden.bs.modal', () => {
+            const anyOpen = document.querySelectorAll('.modal.show');
+            if (anyOpen.length === 0) {
+                whatsappFab.classList.remove(HIDDEN_CLASS);
+            }
+        });
+
+        // b) Esconder quando o footer está visível (evitar sobreposição)
+        const footer = document.querySelector('.footer-custom');
+        if (footer) {
+            const fabFooterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Só altera se nenhum modal estiver aberto (modais têm prioridade)
+                    if (document.querySelectorAll('.modal.show').length > 0) return;
+                    if (entry.isIntersecting) {
+                        whatsappFab.classList.add(HIDDEN_CLASS);
+                    } else {
+                        whatsappFab.classList.remove(HIDDEN_CLASS);
+                    }
+                });
+            }, { rootMargin: '0px 0px -40px 0px', threshold: 0.05 });
+
+            fabFooterObserver.observe(footer);
+        }
+    }
+
 });
+
 
 

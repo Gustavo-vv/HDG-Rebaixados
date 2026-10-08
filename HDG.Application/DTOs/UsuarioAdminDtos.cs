@@ -46,15 +46,6 @@ public class AlterarSenhaAdminDto
     public string ConfirmarSenha { get; set; } = string.Empty;
 }
 
-public class AlterarPerfilDto
-{
-    [Required]
-    public string Id { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "O perfil é obrigatório.")]
-    public string NovaRole { get; set; } = string.Empty; // "Admin" ou "Cliente"
-}
-
 public class FiltroUsuariosDto
 {
     public string? Busca { get; set; }

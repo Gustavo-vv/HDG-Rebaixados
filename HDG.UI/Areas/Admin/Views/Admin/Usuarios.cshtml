@@ -153,34 +153,43 @@
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
 
-                                <!-- Botão Alterar Senha -->
-                                <button type="button" 
-                                        class="btn btn-outline-warning" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#modalAlterarSenha"
-                                        data-user-id="@user.Id"
-                                        data-user-nome="@user.NomeCompleto"
-                                        title="Redefinir Senha"
-                                        aria-label="Redefinir senha de @user.NomeCompleto">
-                                    <i class="bi bi-key-fill"></i>
-                                </button>
-
-                                <!-- Botão Alterar Perfil -->
-                                <button type="button" 
-                                        class="btn btn-outline-info" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#modalAlterarPerfil"
-                                        data-user-id="@user.Id"
-                                        data-user-nome="@user.NomeCompleto"
-                                        data-user-role="@(user.IsAdmin ? "Admin" : "Cliente")"
-                                        data-is-self="@(isProprioUsuario ? "true" : "false")"
-                                        title="Alterar Perfil"
-                                        aria-label="Alterar perfil de @user.NomeCompleto">
-                                    <i class="bi bi-person-gear"></i>
-                                </button>
+                                <!-- Botão Alterar Senha (Apenas permitido para o próprio admin ou para clientes) -->
+                                @if (!user.IsAdmin || isProprioUsuario)
+                                {
+                                    <button type="button" 
+                                            class="btn btn-outline-warning" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalAlterarSenha"
+                                            data-user-id="@user.Id"
+                                            data-user-nome="@user.NomeCompleto"
+                                            title="Redefinir Senha"
+                                            aria-label="Redefinir senha de @user.NomeCompleto">
+                                        <i class="bi bi-key-fill"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary opacity-50" 
+                                            disabled 
+                                            title="Apenas o próprio administrador pode alterar sua senha" 
+                                            aria-label="Alteração bloqueada para outro admin">
+                                        <i class="bi bi-key-fill"></i>
+                                    </button>
+                                }
 
                                 <!-- Botão Alternar Status (Ativar / Desativar) -->
-                                @if (user.Ativo)
+                                @if (user.IsAdmin)
+                                {
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary opacity-50" 
+                                            disabled 
+                                            title="Administradores não podem ser desativados" 
+                                            aria-label="Desativação bloqueada para admin">
+                                        <i class="bi bi-shield-lock-fill"></i>
+                                    </button>
+                                }
+                                else if (user.Ativo)
                                 {
                                     <button type="button" 
                                             class="btn btn-outline-danger" 
@@ -189,7 +198,7 @@
                                             data-user-id="@user.Id"
                                             data-user-nome="@user.NomeCompleto"
                                             data-action-type="desativar"
-                                            data-is-self="@(isProprioUsuario ? "true" : "false")"
+                                            data-is-self="false"
                                             title="Desativar Usuário"
                                             aria-label="Desativar @user.NomeCompleto">
                                         <i class="bi bi-person-x-fill"></i>
@@ -362,60 +371,6 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-warning btn-submit-loading" id="btnSalvarSenha">
                         <span class="btn-text"><i class="bi bi-key-fill me-1"></i>Redefinir Senha</span>
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ======================================================== -->
-<!-- MODAL: ALTERAR PERFIL (ROLE) -->
-<!-- ======================================================== -->
-<div class="modal fade" id="modalAlterarPerfil" tabindex="-1" aria-labelledby="modalAlterarPerfilLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-        <div class="modal-content border border-secondary border-opacity-50 text-white" style="background: #0e1214; pointer-events: auto;">
-            <div class="modal-header border-secondary border-opacity-25">
-                <h5 class="modal-title font-heading fw-bold" id="modalAlterarPerfilLabel">
-                    <i class="bi bi-person-gear text-info me-2"></i>Alterar Perfil de Acesso
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <form method="post" asp-action="UsuarioAlterarPerfil" id="formAlterarPerfil">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="Id" id="perfilUserId" />
-                <div class="modal-body">
-                    <p class="text-secondary small mb-3">
-                        Selecione o nível de permissão para o usuário <strong class="text-white" id="perfilUserNome"></strong>:
-                    </p>
-
-                    <div id="perfilSelfWarning" class="alert alert-danger py-2 px-3 small d-none mb-3">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                        Atenção: Você não pode alterar ou revogar seu próprio perfil de administrador!
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="form-check p-3 rounded mb-2 border border-secondary border-opacity-25 bg-dark">
-                            <input class="form-check-input" type="radio" name="NovaRole" id="roleAdmin" value="Admin">
-                            <label class="form-check-label text-white fw-bold d-block" for="roleAdmin">
-                                <i class="bi bi-shield-shaded text-warning me-1"></i> Administrador
-                                <span class="d-block text-secondary fw-normal small">Acesso total ao painel administrativo, peças, moderação e usuários.</span>
-                            </label>
-                        </div>
-                        <div class="form-check p-3 rounded border border-secondary border-opacity-25 bg-dark">
-                            <input class="form-check-input" type="radio" name="NovaRole" id="roleCliente" value="Cliente">
-                            <label class="form-check-label text-white fw-bold d-block" for="roleCliente">
-                                <i class="bi bi-person text-secondary me-1"></i> Cliente
-                                <span class="d-block text-secondary fw-normal small">Acesso apenas às áreas públicas do site e envio de avaliações.</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-secondary border-opacity-25">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info btn-submit-loading" id="btnSalvarPerfil">
-                        <span class="btn-text"><i class="bi bi-check2 me-1"></i>Confirmar Alteração</span>
                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -662,44 +617,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const arr = new Uint8Array(1);
         window.crypto.getRandomValues(arr);
         return arr[0];
-    }
-
-    // ----------------------------------------------------
-    // Modal Alterar Perfil (Role)
-    // ----------------------------------------------------
-    const modalPerfil = document.getElementById('modalAlterarPerfil');
-    if (modalPerfil) {
-        modalPerfil.addEventListener('show.bs.modal', function (event) {
-            const btn = event.relatedTarget;
-            const userId = btn.getAttribute('data-user-id');
-            const userName = btn.getAttribute('data-user-nome');
-            const userRole = btn.getAttribute('data-user-role');
-            const isSelf = btn.getAttribute('data-is-self') === 'true';
-
-            document.getElementById('perfilUserId').value = userId;
-            document.getElementById('perfilUserNome').textContent = userName;
-
-            const radioAdmin = document.getElementById('roleAdmin');
-            const radioCliente = document.getElementById('roleCliente');
-            const btnSalvar = document.getElementById('btnSalvarPerfil');
-            const warningSelf = document.getElementById('perfilSelfWarning');
-
-            if (userRole === 'Admin') {
-                radioAdmin.checked = true;
-            } else {
-                radioCliente.checked = true;
-            }
-
-            if (isSelf) {
-                radioCliente.disabled = true;
-                warningSelf.classList.remove('d-none');
-                btnSalvar.disabled = true;
-            } else {
-                radioCliente.disabled = false;
-                warningSelf.classList.add('d-none');
-                btnSalvar.disabled = false;
-            }
-        });
     }
 
     // ----------------------------------------------------

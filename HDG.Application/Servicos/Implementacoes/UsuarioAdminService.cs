@@ -144,22 +144,14 @@ public class UsuarioAdminService : IUsuarioAdminService
             return (false, new[] { "Você não pode desativar o seu próprio usuário de administrador." }, user.Ativo);
         }
 
-        var novoStatus = !user.Ativo;
-
-        // Se estiver desativando, checar se não é o último Admin ativo
-        if (!novoStatus)
+        // REGRA DE SEGURANÇA: Não é permitido desativar OUTRO administrador
+        var isUserAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        if (isUserAdmin)
         {
-            var isUserAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-            if (isUserAdmin)
-            {
-                var admins = await _userManager.GetUsersInRoleAsync("Admin");
-                var adminsAtivos = admins.Count(a => a.Ativo);
-                if (adminsAtivos <= 1)
-                {
-                    return (false, new[] { "Não é permitido desativar o último administrador ativo do sistema." }, user.Ativo);
-                }
-            }
+            return (false, new[] { "Não é permitido desativar outro administrador do sistema." }, user.Ativo);
         }
+
+        var novoStatus = !user.Ativo;
 
         user.Ativo = novoStatus;
         var resultado = await _userManager.UpdateAsync(user);
@@ -189,6 +181,13 @@ public class UsuarioAdminService : IUsuarioAdminService
         if (user == null)
             return (false, new[] { "Usuário não encontrado." });
 
+        // REGRA DE SEGURANÇA: Só o próprio admin pode trocar sua própria senha. Não é permitido alterar senha de OUTRO admin
+        var isUserAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        if (isUserAdmin && user.Id != adminLogadoId)
+        {
+            return (false, new[] { "Apenas o próprio administrador pode alterar sua senha." });
+        }
+
         // Gera token de redefinição e aplica a nova senha
         var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
         var resultado = await _userManager.ResetPasswordAsync(user, resetToken, dto.NovaSenha);
@@ -203,68 +202,6 @@ public class UsuarioAdminService : IUsuarioAdminService
 
         _logger.LogInformation("Admin {AdminId} redefiniu com sucesso a senha do usuário {UserId} ({Email})",
             adminLogadoId, user.Id, user.Email);
-
-        return (true, Array.Empty<string>());
-    }
-
-    public async Task<(bool Sucesso, string[] Erros)> AlterarPerfilAsync(AlterarPerfilDto dto, string adminLogadoId)
-    {
-        if (string.IsNullOrWhiteSpace(dto.Id))
-            return (false, new[] { "Identificador de usuário inválido." });
-
-        var roleDestino = dto.NovaRole?.Trim();
-        if (roleDestino != "Admin" && roleDestino != "Cliente")
-            return (false, new[] { "Perfil inválido. O usuário deve ser Admin ou Cliente." });
-
-        var user = await _userManager.FindByIdAsync(dto.Id);
-        if (user == null)
-            return (false, new[] { "Usuário não encontrado." });
-
-        var rolesAtuais = await _userManager.GetRolesAsync(user);
-        var jaTemRole = rolesAtuais.Contains(roleDestino, StringComparer.OrdinalIgnoreCase);
-        if (jaTemRole)
-        {
-            return (true, Array.Empty<string>());
-        }
-
-        // REGRA DE SEGURANÇA: Admin logado não pode remover o próprio perfil de Admin
-        if (user.Id == adminLogadoId && roleDestino != "Admin")
-        {
-            return (false, new[] { "Você não pode revogar o seu próprio perfil de administrador." });
-        }
-
-        // REGRA DE SEGURANÇA: Se estiver rebaixando de Admin para Cliente, checar se não é o último Admin ativo
-        if (rolesAtuais.Contains("Admin") && roleDestino == "Cliente")
-        {
-            var admins = await _userManager.GetUsersInRoleAsync("Admin");
-            var adminsAtivos = admins.Count(a => a.Ativo);
-            if (adminsAtivos <= 1 && user.Ativo)
-            {
-                return (false, new[] { "Não é permitido remover o perfil do último administrador ativo do sistema." });
-            }
-        }
-
-        // Remove papéis antigos e adiciona o novo papel
-        if (rolesAtuais.Any())
-        {
-            var remocao = await _userManager.RemoveFromRolesAsync(user, rolesAtuais);
-            if (!remocao.Succeeded)
-            {
-                return (false, remocao.Errors.Select(TraduzirErroIdentity).ToArray());
-            }
-        }
-
-        var adicao = await _userManager.AddToRoleAsync(user, roleDestino);
-        if (!adicao.Succeeded)
-        {
-            return (false, adicao.Errors.Select(TraduzirErroIdentity).ToArray());
-        }
-
-        // Atualiza carimbo de segurança para renovar permissões em claims/cookies
-        await _userManager.UpdateSecurityStampAsync(user);
-
-        _logger.LogInformation("Admin {AdminId} alterou o perfil do usuário {UserId} ({Email}) para {Role}",
-            adminLogadoId, user.Id, user.Email, roleDestino);
 
         return (true, Array.Empty<string>());
     }

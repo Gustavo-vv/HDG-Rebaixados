@@ -1412,52 +1412,133 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 /* ==========================================================================
-   BOTAO FLUTUANTE DE WHATSAPP
+   BOTÃO FLUTUANTE DE WHATSAPP (Pill Premium)
+   Desktop: pílula escura com ícone + texto + ponto online pulsando
+   Mobile: círculo compacto (48px) somente com ícone
    ========================================================================== */
-.whatsapp-float-btn {
+.whatsapp-fab {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    width: 60px;
-    height: 60px;
-    background: var(--whatsapp-green);
-    color: #fff !important;
-    border-radius: 50%;
-    display: flex;
+    z-index: var(--z-fab);
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
-    z-index: 1020;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 10px;
+    padding: 0 22px 0 16px;
+    height: 52px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    border-radius: 999px;
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.5),
+        0 0 12px var(--accent-green-glow-subtle);
+    transition:
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+    cursor: pointer;
+    will-change: transform;
 }
 
-.whatsapp-float-btn:hover {
-    background: var(--whatsapp-green-hover);
-    transform: scale(1.1) translateY(-3px);
-    box-shadow: 0 12px 30px rgba(37, 211, 102, 0.7);
+.whatsapp-fab:hover {
+    background: var(--bg-card-hover);
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.6),
+        0 0 20px var(--accent-green-glow);
+    transform: translateY(-3px);
+    color: var(--text-primary) !important;
 }
 
-.whatsapp-float-pulse {
+.whatsapp-fab:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/* Ícone do WhatsApp */
+.whatsapp-fab-icon {
+    font-size: 1.35rem;
+    color: var(--accent-green);
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+}
+
+.whatsapp-fab:hover .whatsapp-fab-icon {
+    color: var(--accent-green-hover);
+}
+
+/* Texto do Botão (oculto no mobile) */
+.whatsapp-fab-label {
+    white-space: nowrap;
+    line-height: 1;
+}
+
+/* Ponto Verde "Online" Pulsante */
+.whatsapp-fab-online {
     position: absolute;
-    inset: 0;
+    top: 6px;
+    right: 6px;
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
     border-radius: 50%;
-    border: 2px solid var(--whatsapp-green);
-    animation: pulse-wave 2s infinite;
-    pointer-events: none;
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    animation: fab-online-pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse-wave {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
+@keyframes fab-online-pulse {
+    0%, 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); }
+    50% { box-shadow: 0 0 12px rgba(34, 197, 94, 0.8); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .whatsapp-fab-online {
+        animation: none;
     }
-    100% {
-        transform: scale(1.6);
-        opacity: 0;
+    .whatsapp-fab {
+        transition-duration: 0.01s;
     }
 }
+
+/* Estado oculto (durante modais ou ao atingir o footer) */
+.whatsapp-fab--hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(20px);
+}
+
+/* Mobile: círculo compacto */
+@media (max-width: 767.98px) {
+    .whatsapp-fab {
+        bottom: 16px;
+        right: 16px;
+        padding: 0;
+        width: 52px;
+        height: 52px;
+        justify-content: center;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .whatsapp-fab-label {
+        display: none;
+    }
+
+    .whatsapp-fab-online {
+        top: 2px;
+        right: 2px;
+        width: 9px;
+        height: 9px;
+    }
+}
+
 
 /* ==========================================================================
    FORMULÁRIOS & CAMPOS CUSTOMIZADOS
@@ -1891,6 +1972,402 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .toast-container {
     z-index: var(--z-toast, 1090) !important;
 }
+
+/* ==========================================================================
+   HDG TOAST NOTIFICATION SYSTEM (BOTTOM-RIGHT / MOBILE-CENTER)
+   ========================================================================== */
+#toast-container {
+    position: fixed !important;
+    bottom: 24px;
+    right: 24px;
+    z-index: var(--z-toast, 1090) !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    width: 100%;
+    pointer-events: none !important;
+}
+
+.hdg-toast {
+    position: relative;
+    pointer-events: auto !important;
+    background: #0e1214;
+    color: var(--text-primary, #f1f5f9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 1px rgba(255, 255, 255, 0.2);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.hdg-toast.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.hdg-toast.hide {
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+}
+
+.hdg-toast-sucesso {
+    border-left: 4px solid var(--accent-green, #9AE000) !important;
+}
+
+.hdg-toast-sucesso .hdg-toast-icon {
+    color: var(--accent-green, #9AE000);
+}
+
+.hdg-toast-erro {
+    border-left: 4px solid #ef4444 !important;
+}
+
+.hdg-toast-erro .hdg-toast-icon {
+    color: #ef4444;
+}
+
+.hdg-toast-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.hdg-toast-body {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    word-break: break-word;
+    color: #f8fafc;
+}
+
+.hdg-toast-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: color 0.15s ease, transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hdg-toast-close:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+@media (max-width: 575.98px) {
+    #toast-container {
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+        max-width: none !important;
+        width: calc(100% - 32px) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hdg-toast {
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* ==========================================================================
+   PÁGINA DETALHES - GALERIA RESPONSIVA & BREADCRUMB
+   ========================================================================== */
+.detalhe-breadcrumb-nav {
+    width: 100%;
+    min-width: 0;
+}
+
+.detalhe-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.88rem;
+}
+
+.detalhe-breadcrumb .breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 0;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.detalhe-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    padding-right: 6px;
+    padding-left: 0;
+    color: var(--text-muted);
+}
+
+.detalhe-breadcrumb .breadcrumb-item.active {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+}
+
+@media (min-width: 768px) {
+    .detalhe-breadcrumb .breadcrumb-item.active {
+        max-width: 450px;
+    }
+}
+
+/* Galeria de Fotos */
+.detalhe-galeria-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.detalhe-imagem-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-card);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.detalhe-imagem-principal {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    background-color: var(--bg-card);
+    transition: opacity 0.2s ease;
+}
+
+.detalhe-selo-oficial {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 2;
+    background: rgba(6, 8, 9, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-medium);
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+    max-width: calc(100% - 24px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 575.98px) {
+    .detalhe-selo-oficial {
+        font-size: 0.68rem;
+        padding: 3px 8px;
+        bottom: 8px;
+        left: 8px;
+    }
+}
+
+/* Miniaturas */
+.detalhe-thumbs-slider {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-medium) transparent;
+}
+
+.detalhe-thumbs-slider::-webkit-scrollbar {
+    height: 4px;
+}
+
+.detalhe-thumbs-slider::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: 4px;
+}
+
+.detalhe-thumb-item {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    scroll-snap-align: start;
+    border-radius: 8px;
+    border: 1px solid var(--border-medium);
+    overflow: hidden;
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.detalhe-thumb-item:hover,
+.detalhe-thumb-item.active {
+    border-color: var(--accent-green);
+    transform: translateY(-2px);
+}
+
+.detalhe-thumb-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==========================================================================
+   MENU MOBILE - BLOCO DO USUÁRIO & AÇÕES PREMIUM
+   ========================================================================== */
+.mobile-user-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.mobile-user-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 12px;
+}
+
+.mobile-user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(154, 224, 0, 0.08);
+    border: 1px solid var(--border-accent);
+    color: var(--accent-green);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.mobile-user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mobile-user-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.mobile-user-role {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.mobile-user-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-user-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.mobile-user-link:hover, .mobile-user-link:focus {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--accent-green);
+    border-color: var(--border-medium);
+}
+
+.mobile-user-link.text-warning:hover {
+    color: var(--tuning-gold) !important;
+}
+
+.mobile-user-link.text-danger:hover {
+    color: #ef4444 !important;
+}
+
+/* Botão Solicitar Orçamento Mobile (contorno premium) */
+.btn-orcamento-mobile {
+    min-height: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 18px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--border-accent);
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-orcamento-mobile i {
+    color: var(--accent-green);
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+}
+
+.btn-orcamento-mobile:hover, .btn-orcamento-mobile:focus {
+    background: var(--accent-green-glow-subtle);
+    border-color: var(--accent-green);
+    color: var(--accent-green) !important;
+    box-shadow: 0 0 16px var(--accent-green-glow);
+}
+
+.btn-orcamento-mobile:hover i {
+    color: var(--accent-green-hover);
+}
+
 
 
 
